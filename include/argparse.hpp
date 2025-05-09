@@ -5,10 +5,10 @@
  */
 
 // header file for argparse module in gitlet
+
 #ifndef GITLET_ARGPARSE_HPP
 #define GITLET_ARGPARSE_HPP
 #include <external.hpp>
-
 
 namespace gitlet{
     namespace argparse{
@@ -36,6 +36,7 @@ namespace gitlet{
                 std::unordered_map<std::string, option> _option_list;
             private:
                 void _check_option(const std::string& short_option, const std::string& long_option);
+                void _check_add_option(const std::string& short_option, const std::string& long_option);
             public:
                 Parser(int argc, char ** argv, const std::string & prog_name, const std::string & description);
                 ~Parser();
@@ -43,6 +44,7 @@ namespace gitlet{
                     arg_type type = required_argument);
                 void add_option(const std::string& short_option, const std::string& long_option, 
                     const std::string& description, arg_type type = required_argument);
+                bool has_option(const std::string& short_option);
         };
     }
 }

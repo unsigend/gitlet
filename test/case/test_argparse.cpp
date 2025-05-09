@@ -1,10 +1,27 @@
-#include <argparse.hpp>
 #include <gtest/gtest.h>
+#include <argparse.hpp>
 
-TEST(some, simple) {
-    EXPECT_EQ(1, 1);
+TEST(ArgparseTest, add_option) {
+    gitlet::argparse::Parser parser(1, nullptr, "test", "description");
+    EXPECT_THROW(parser.add_option("a", "all", gitlet::argparse::Parser::required_argument),
+    std::invalid_argument);
+    EXPECT_NO_THROW(parser.add_option("-a", "all", gitlet::argparse::Parser::required_argument));
+    EXPECT_THROW(parser.add_option("-a", "-b","all", gitlet::argparse::Parser::required_argument),
+    std::invalid_argument);
 }
-int main(){
-    ::testing::InitGoogleTest();
-    return RUN_ALL_TESTS();   
+TEST(ArgparseTest, has_option) {
+    gitlet::argparse::Parser parser(1, nullptr, "test", "description");
+    EXPECT_FALSE(parser.has_option("-a"));
+    EXPECT_NO_THROW(parser.add_option("-a", "all", gitlet::argparse::Parser::required_argument));
+    EXPECT_TRUE(parser.has_option("-a"));
+    EXPECT_NO_THROW(parser.add_option("-b", "all", gitlet::argparse::Parser::required_argument));
+    EXPECT_NO_THROW(parser.add_option("-c", "all", gitlet::argparse::Parser::required_argument));
+    EXPECT_NO_THROW(parser.add_option("-d", "all", gitlet::argparse::Parser::required_argument));
+    EXPECT_TRUE(parser.has_option("-b"));
+    EXPECT_TRUE(parser.has_option("-c"));
+    EXPECT_TRUE(parser.has_option("-d"));
+    EXPECT_FALSE(parser.has_option("-e"));
+    EXPECT_FALSE(parser.has_option("-f"));
+    EXPECT_FALSE(parser.has_option("-g"));
+    
 }

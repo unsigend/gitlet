@@ -7,8 +7,11 @@
 #include <external.hpp>
 #include <argparse.hpp>
 
-int main() {
+int main(int argc, char ** argv) {
     
-
+    // only one argument 
+    if (argc < 2){
+        
+    }
     return 0;
 }
