@@ -38,7 +38,6 @@ TEST_DIR	:= 		./test
 OBJ_DIR		:= 		$(BUILD_DIR)/obj
 DEP_DIR		:= 		$(BUILD_DIR)/dep
 
-
 # variables for tools
 GCC  		:= 		gcc
 CXX  		:= 		g++
@@ -72,17 +71,12 @@ $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
 	$(CXX_INCLUDE_FLAGS) -c $< -o $@
 	@echo "  + CXX\t$<"
 
-main.o: main.cpp
-	@$(CXX) $(CXX_FLAGS) $(CXX_DEP_FLAGS) $(addprefix $(DEP_DIR)/,$(patsubst %.cpp,%.d,$<)) \
-	$(CXX_INCLUDE_FLAGS) -c $< -o $@
-	@echo "  + CXX\t$<"
-
 # target definitions 
 .DEFAULT_GOAL := help
 .PHONY: all clean test help check info
 
-all: check info $(OBJS) main.o
-	@$(LD) $(CXX_FLAGS) $(OBJS) main.o -o $(PROG_NAME)
+all: check info $(OBJS) 
+	@$(LD) $(CXX_FLAGS) $(OBJS) -o $(PROG_NAME)
 	@echo "  + LD\t$(PROG_NAME)"
 
 export LIB_NAME
@@ -92,7 +86,7 @@ test: check $(OBJS)
 
 clean:
 	@rm -rf $(BUILD_DIR)
-	@rm -rf $(PROG_NAME) main.o
+	@rm -rf $(PROG_NAME)
 	@$(MAKE) -C $(TEST_DIR) clean
 
 help:

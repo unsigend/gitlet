@@ -4,11 +4,8 @@
  * Copyright (c) 2025, 2026 QIU YIXIANG
  */
 
-#include <general/external.hpp>
 #include <argparse/argparse.hpp>
-#include <cmd/cmd.hpp>
 
-using namespace gitlet;
 
 int main(int argc, char *argv[]) {
     
