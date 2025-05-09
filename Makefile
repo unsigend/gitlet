@@ -59,14 +59,15 @@ CXX_DEP_FLAGS   	+=  -MMD -MP -MF
 CXX_INCLUDE_FLAGS	+= 	-I $(INCLUDE_DIR)
 
 # The OBJS exclude the main.o in root directory
-SRCS 		:= 		$(wildcard $(SRC_DIR)/*.cpp)
+SRCS 		:= 		$(shell find $(SRC_DIR) -type f -name "*.cpp")
 OBJS 		:= 		$(patsubst $(SRC_DIR)/%.cpp,$(OBJ_DIR)/%.o,$(SRCS))
-DEPS 		:= 		$(patsubst $(SRC_DIR)/%.cpp,$(DEP_DIR)/%.d,$(SRCS))
+DEPS 		:= 		$(wildcard $(DEP_DIR)/*.d)
 
 # Make sure include the dependency files
 -include $(DEPS)
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.cpp
+	@mkdir -p $(dir $@)
 	@$(CXX) $(CXX_FLAGS) $(CXX_DEP_FLAGS) $(addprefix $(DEP_DIR)/,$(patsubst %.cpp,%.d,$(notdir $<))) \
 	$(CXX_INCLUDE_FLAGS) -c $< -o $@
 	@echo "  + CXX\t$<"
@@ -76,7 +77,7 @@ main.o: main.cpp
 	$(CXX_INCLUDE_FLAGS) -c $< -o $@
 	@echo "  + CXX\t$<"
 
-# target definitions
+# target definitions 
 .DEFAULT_GOAL := help
 .PHONY: all clean test help check info
 

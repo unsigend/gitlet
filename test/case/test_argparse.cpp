@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include <argparse.hpp>
+#include <argparse/argparse.hpp>
 
 TEST(ArgparseTest, add_option) {
     gitlet::argparse::Parser parser(1, nullptr, "test", "description");

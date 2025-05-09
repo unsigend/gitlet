@@ -8,8 +8,7 @@
 
 #ifndef GITLET_ARGPARSE_HPP
 #define GITLET_ARGPARSE_HPP
-
-#include <external.hpp>
+#include <general/external.hpp>
 
 namespace gitlet{
     namespace argparse{

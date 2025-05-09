@@ -4,9 +4,9 @@
  * Copyright (c) 2025, 2026 QIU YIXIANG
  */
 
-#include <external.hpp>
-#include <argparse.hpp>
-#include <cmd.hpp>
+#include <general/external.hpp>
+#include <argparse/argparse.hpp>
+#include <cmd/cmd.hpp>
 
 using namespace gitlet;
 

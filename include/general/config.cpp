@@ -6,8 +6,8 @@
 
 #ifndef GITLET_CONFIG_HPP
 #define GITLET_CONFIG_HPP
-#include <external.hpp>
 
+#include <external.hpp>
 
 
 #endif

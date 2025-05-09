@@ -7,7 +7,7 @@
 #ifndef GITLET_CMD_HPP
 #define GITLET_CMD_HPP
 
-#include <external.hpp>
+#include <general/external.hpp>
 
 namespace gitlet{
     namespace cmd {

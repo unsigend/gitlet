@@ -5,7 +5,7 @@
  */
 
 
-#include <argparse.hpp>
+#include <argparse/argparse.hpp>
 
 #define SHORT_OPTION_PREFIX     '-'
 #define LONG_OPTION_PREFIX      "--"
