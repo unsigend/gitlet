@@ -6,12 +6,20 @@
 
 #include <external.hpp>
 #include <argparse.hpp>
+#include <cmd.hpp>
+
+using namespace gitlet;
 
 int main(int argc, char ** argv) {
     
-    // only one argument 
+    // only one argument (program name)
     if (argc < 2){
         
+    }else{
+        // with more than one argument
+        std::string sub_cmd = argv[1];
+
     }
+    
     return 0;
 }
