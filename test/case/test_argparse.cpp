@@ -9,6 +9,7 @@ TEST(ArgparseTest, add_option) {
     EXPECT_THROW(parser.add_option("-a", "-b","all", gitlet::argparse::Parser::required_argument),
     std::invalid_argument);
 }
+
 TEST(ArgparseTest, has_option) {
     gitlet::argparse::Parser parser(1, nullptr, "test", "description");
     EXPECT_FALSE(parser.has_option("-a"));
@@ -23,5 +24,5 @@ TEST(ArgparseTest, has_option) {
     EXPECT_FALSE(parser.has_option("-e"));
     EXPECT_FALSE(parser.has_option("-f"));
     EXPECT_FALSE(parser.has_option("-g"));
-    
+
 }

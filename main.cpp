@@ -10,7 +10,7 @@
 
 using namespace gitlet;
 
-int main(int argc, char ** argv) {
+int main(int argc, char *argv[]) {
     
     // only one argument (program name)
     if (argc < 2){
