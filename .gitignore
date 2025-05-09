@@ -1,0 +1,8 @@
+# ignore VS Code workspace settings
+.vscode/
+# ignore build dir
+build/
+# ignore MacOS storage files
+.DS_Store
+# ignore Python cache files
+__pycache__/
