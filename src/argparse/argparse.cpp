@@ -1,86 +1,109 @@
 /**
- * Part of the Implementation of gitlet project
- * Under the MIT License
+ * This project is part of the gitlet project.
+ * The gitlet project is a simple implementation of git command line tool.
+ * Under MIT License
  * Copyright (c) 2025, 2026 QIU YIXIANG
  */
 
 
+/**
+ * @file argparse.cpp
+ * @brief Implementation of the argparse utility module.
+ * @author QIU YIXIANG
+ * @copyright (C) 2025, 2026 QIU YIXIANG
+ */
+
 #include <argparse/argparse.hpp>
 
-#define SHORT_OPTION_PREFIX     '-'
-#define LONG_OPTION_PREFIX      "--"
+#define ARGPARSE_SHORT_OPTION_PREFIX    '-'
+#define ARGPARSE_LONG_OPTION_PREFIX     "--"
 
+namespace __argparse__{
+    bool _is_valid_short_option(const std::string& short_option) noexcept {
+        return short_option.size() == 2 && short_option[0] == ARGPARSE_SHORT_OPTION_PREFIX;
+    }
+    bool _is_valid_long_option(const std::string& long_option) noexcept {
+        return long_option.size() > 2 && long_option.substr(0, 2) == ARGPARSE_LONG_OPTION_PREFIX;
+    }
+}
 namespace argparse{
 
-    Parser::Parser(int argc, char ** argv, const std::string& prog_name, const std::string& description)
-        : _argv(argv), _prog_name(prog_name), _description(description), _option_list() {
-            if (argc < 1) {
-                throw std::invalid_argument("INTERNAL ERROR: argc must be greater than 0");
+    Argparse::Argparse() : _arguments_list() { }
+    Argparse::~Argparse() { }
+
+    Argparse::argument::argument(const std::string& short_option, const std::string& long_option,
+        const std::string& description, argument_type type) :
+        _short_option(short_option), _long_option(long_option),
+        _description(description), _type(type), _value("") { }
+
+    Argparse::argument::~argument() { }
+
+    std::string Argparse::_map_short_to_long(const std::string& short_option) const {
+        auto iter = this->_short_to_long_map.find(short_option);
+        if (iter != this->_short_to_long_map.end()) {
+            return iter->second;
+        }else{
+            return std::string();
+        }
+    }
+
+    std::pair<bool, std::string> Argparse::_has_option(const std::string& option) const {
+        if (__argparse__::_is_valid_short_option(option)){
+            // if is a short option
+            auto long_option = this->_map_short_to_long(option);
+            if (long_option.empty())
+                return std::make_pair(false, std::string());
+            auto iter = this->_arguments_list.find(long_option);
+            if (iter != this->_arguments_list.end()){
+                return std::make_pair(true, long_option);
             }
-            this->_argc = static_cast<uint32_t>(argc);
-            (void)this->_argv;
+            return std::make_pair(false, std::string());
+        }else if (__argparse__::_is_valid_long_option(option)){
+            // if is a long option
+            auto iter = this->_arguments_list.find(option);
+            if (iter != this->_arguments_list.end()){
+                return std::make_pair(true, option);
+            }
+            return std::make_pair(false, std::string());
+        }
+        return std::make_pair(false, std::string());
     }
 
-    Parser::~Parser() { }
-
-    /**
-     * @brief check if the short_option and long_option are valid
-     *        short_option must start with '-' and long_option must start with '--'
-     * @param short_option the short option to be checked
-     * @param long_option the long option to be checked
-     */
-    void Parser::_check_option(const std::string& short_option, const std::string& long_option) {
-        if (short_option.empty() || short_option[0] != SHORT_OPTION_PREFIX){
-            throw std::invalid_argument("INTERNAL ERROR: short_option must start with '-'");
-        }
-        if (short_option.size() > 2) {
-            throw std::invalid_argument("INTERNAL ERROR: short_option must be a single character");
-        }
-        if (!long_option.empty() && long_option.substr(0, 2) != LONG_OPTION_PREFIX){
-            throw std::invalid_argument("INTERNAL ERROR: long_option must start with '--'");
-        }
+    void Argparse::add_option(const std::string& long_option, const std::string& description,
+        argument_type type) {
+        this->add_option("", long_option, description, type);
     }
-    /**
-     * @brief check if the short_option and long_option are valid
-     *        And make sure the option can be added to the list
-     * @param short_option the short option to be checked
-     * @param long_option the long option to be checked
-     */
-    void Parser::_check_add_option(const std::string& short_option, const std::string& long_option) {
-        this->_check_option(short_option, long_option);
-        if (this->_option_list.find(short_option) != this->_option_list.end()) {
-            throw std::invalid_argument("INTERNAL ERROR: short option already exists");
+
+    void Argparse::add_option(const std::string& short_option, const std::string& long_option,
+        const std::string& description, argument_type type) {
+        // the long option must be valid
+        if (__argparse__::_is_valid_long_option(long_option)){
+            if (!short_option.empty()){
+                if (__argparse__::_is_valid_short_option(short_option)){
+                    this->_short_to_long_map[short_option] = long_option;
+                    this->_arguments_list.emplace(
+                        std::make_pair(long_option, argument(short_option, long_option, description, type)));
+                }else{
+                    throw std::invalid_argument("ARGPARSE ERROR: Invalid short option: " + short_option);
+                }
+            }else{
+                this->_arguments_list.emplace(
+                    std::make_pair(long_option, argument("", long_option, description, type)));
+            }
+        }else{
+            throw std::invalid_argument("ARGPARSE ERROR: Invalid long option: " + long_option);
         }
     }
 
-    void Parser::add_option(const std::string& short_option, const std::string& description, 
-        arg_type type) {
-        this->add_option(short_option, "", description, type);
+    bool Argparse::has_option(const std::string& option) const {
+        return this->_has_option(option).first;
     }
-    
-    void Parser::add_option(const std::string& short_option, const std::string& long_option, 
-        const std::string& description, arg_type type) {
-        // Make sure that short_option and long_option are valid
-        this->_check_add_option(short_option, long_option);
 
-        // construct the option object and add it to the hash table
-        option opt;
-        opt._short_option = short_option;
-        opt._long_option = long_option;
-        opt._description = description;
-        opt._type = type;
-        this->_option_list[short_option] = opt;
-    }
-    bool Parser::has_option(const std::string& short_option) {
-        try{
-            this->_check_option(short_option, "");
-        } catch (const std::invalid_argument& e) {
-            return false;
+    std::string Argparse::get_argument(const std::string& option) const {
+        std::pair<bool, std::string> result = this->_has_option(option);
+        if (result.first){
+            return this->_arguments_list.find(result.second)->second._value;
         }
-        // check if the short_option is in the option list
-        if (this->_option_list.find(short_option) != this->_option_list.end()) {
-            return true;
-        }
-        return false;
+        return std::string();
     }
 }

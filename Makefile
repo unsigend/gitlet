@@ -51,6 +51,7 @@ endif
 AR_FLAGS	:= 		rcs
 # CXX flags for c++
 CXX_FLAGS 	:= 		-Wall -Wextra -Werror -Wshadow
+CXX_FLAGS   +=      -Wno-unused-parameter
 CXX_FLAGS 	+= 		-std=c++17
 CXX_FLAGS   +=      -O2 
 
