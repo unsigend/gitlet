@@ -1,0 +1,146 @@
+# MIT License
+#
+# Copyright (c) 2025 Qiu Yixiang
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
+
+
+# Makefile for build gitlet
+# Main Makefile
+
+# Variables for paths
+BUILD_PATH          	:= 	./build
+CONFIG_PATH         	:= 	./config
+EXTERNAL_PATH       	:= 	./external
+LIB_PATH            	:= 	./lib
+TEST_PATH           	:= 	./test
+OBJ_PATH            	:= 	$(BUILD_PATH)/obj
+
+INCLUDE_PATH        	:= 	./include
+SRC_PATH            	:= 	./src
+
+EXTERNAL_INCLUDE_PATH	:= 	$(EXTERNAL_PATH)/include
+EXTERNAL_SRC_PATH		:= 	$(EXTERNAL_PATH)/src
+
+# Variables for files
+CONFIG_FILE         	:= 	$(CONFIG_PATH)/config.mk
+
+-include $(CONFIG_FILE)
+
+# Variables for GCC compiler
+CC                  	:= 	gcc
+CXX                 	:= 	g++
+LD                      :=  $(CC)
+PYTHON               	:= 	python3
+
+# Variable for GCC compiler flags
+CC_FLAGS                :=  -std=c11
+
+# Variable for GCC include paths
+CC_INCLUDE_PATHS        :=  -I $(INCLUDE_PATH)
+CC_INCLUDE_PATHS       	+=  -isystem $(EXTERNAL_INCLUDE_PATH)
+
+# Variable for GCC compiler warnings
+CC_WARNINGS            	:= 	-Wall -Wextra -Werror
+CC_WARNINGS             +=  -Wextra -Wno-unused-parameter
+CC_WARNINGS             +=  -Wno-unused-function
+
+# Variable for GCC debugger flag
+CC_DEBUG                :=
+ifeq ($(DEBUG), 1)
+	CC_DEBUG            +=  -g
+endif
+
+# Variable for GCC Optimize flag
+CC_OPTIMIZE             :=
+ifeq ($(DEBUG), 1)
+	CC_OPTIMIZE        	+=  -O0
+else
+	CC_OPTIMIZE         +=  -O2
+endif
+
+CC_DEPENDENCY           :=
+CC_DEPENDENCY           +=  -MMD -MP -MF
+
+CC_FLAGS                +=  $(CC_WARNINGS) $(CC_DEBUG) $(CC_OPTIMIZE) $(CC_INCLUDE_PATHS)
+
+# Export variables for sub-makefiles
+export PYTHON
+export CC
+export CC_WARNINGS
+export CC_DEBUG
+export CC_OPTIMIZE
+export CC_DEPENDENCY
+
+# Variable for Host OS
+HOST_OS                 := 	$(shell uname -s)
+# Variables for program and library names
+PROGRAM_NAME            := 	gitlet
+LIBRARY_NAME            := 	$(PROGRAM_NAME)
+
+ifeq ($(LIBRARY_BUILD_METHOD), STATIC)
+LIBRARY_POSTFIX         := 	.a
+else
+ifeq ($(HOST_OS), Darwin)
+LIBRARY_POSTFIX         := 	.dylib
+else
+LIBRARY_POSTFIX         := 	.so
+endif
+endif
+
+export LIBRARY_NAME
+export LIBRARY_POSTFIX
+
+
+.DEFAULT_GOAL := help
+.PHONY: all clean help lib test
+
+# Build the program
+all:
+	@echo "Building $(PROGRAM_NAME)..."
+
+# Clean all build files
+clean:
+	@rm -rf $(BUILD_PATH)
+	@rm -rf $(LIB_PATH)
+	@$(MAKE) -C $(TEST_PATH) clean
+
+# Clean all build file and cache (danger for performance)
+clean-all:
+	@rm -rf $(BUILD_PATH)
+
+# Show help
+help:
+	@echo "Makefile for build $(PROGRAM_NAME)"
+	@echo "USAGE:"
+	@echo "  make all\t- Build the program"
+	@echo "  make clean\t- Clean all build files"
+	@echo "  make help\t- Show this help"
+	@echo "  make lib\t- Build the $(LIBRARY_NAME) library"
+	@echo "  make test\t- Run the test cases"
+	@echo ""
+
+# Test the program
+test:
+	@$(MAKE) -j4 -C $(TEST_PATH)
+
+# Build the library
+lib:
+	@echo "Building $(LIBRARY_NAME) library..."
+

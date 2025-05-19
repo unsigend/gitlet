@@ -1,0 +1,12 @@
+# Ignore all files in the build directory
+build/
+
+# Ignore vs code files
+.vscode/
+
+# Ignore pytest cache
+.pytest_cache/
+
+# Ignore python cache
+__pycache__/
+
