@@ -136,7 +136,7 @@ help:
 	@echo "  make test\t- Run the test cases"
 	@echo ""
 
-# Test the program
+# Test the program library
 test:
 	@$(MAKE) -j4 -C $(TEST_PATH)
 
