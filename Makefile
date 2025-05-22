@@ -30,7 +30,10 @@ CONFIG_PATH         	:= 	./config
 EXTERNAL_PATH       	:= 	./external
 LIB_PATH            	:= 	./lib
 TEST_PATH           	:= 	./test
+DEP_PATH            	:= 	$(BUILD_PATH)/dep
+
 OBJ_PATH            	:= 	$(BUILD_PATH)/obj
+EXTERNAL_OBJ_PATH   	:= 	$(BUILD_PATH)/external_obj
 
 INCLUDE_PATH        	:= 	./include
 SRC_PATH            	:= 	./src
@@ -46,6 +49,7 @@ CONFIG_FILE         	:= 	$(CONFIG_PATH)/config.mk
 # Variables for GCC compiler
 CC                  	:= 	gcc
 CXX                 	:= 	g++
+AR                      := 	ar
 LD                      :=  $(CC)
 PYTHON               	:= 	python3
 
@@ -80,14 +84,6 @@ CC_DEPENDENCY           +=  -MMD -MP -MF
 
 CC_FLAGS                +=  $(CC_WARNINGS) $(CC_DEBUG) $(CC_OPTIMIZE) $(CC_INCLUDE_PATHS)
 
-# Export variables for sub-makefiles
-export PYTHON
-export CC
-export CC_WARNINGS
-export CC_DEBUG
-export CC_OPTIMIZE
-export CC_DEPENDENCY
-
 # Variable for Host OS
 HOST_OS                 := 	$(shell uname -s)
 # Variables for program and library names
@@ -99,31 +95,59 @@ LIBRARY_POSTFIX         := 	.a
 else
 ifeq ($(HOST_OS), Darwin)
 LIBRARY_POSTFIX         := 	.dylib
+else ifeq ($(HOST_OS), Windows)
+LIBRARY_POSTFIX         := 	.dll
 else
 LIBRARY_POSTFIX         := 	.so
 endif
 endif
 
+SRCS                    := 	$(shell find $(SRC_PATH) -type f -name "*.c")
+OBJS                    := 	$(patsubst $(SRC_PATH)/%.c, $(OBJ_PATH)/%.o, $(SRCS))
+
+EXTERNAL_SRCS           := 	$(shell find $(EXTERNAL_SRC_PATH) -type f -name "*.c")
+EXTERNAL_OBJS           := 	$(patsubst $(EXTERNAL_SRC_PATH)/%.c, $(EXTERNAL_OBJ_PATH)/%.o, $(EXTERNAL_SRCS))
+
+# Export variables for sub-makefiles
+export PYTHON
+export CC
+export CC_WARNINGS
+export CC_DEBUG
+export CC_OPTIMIZE
+export CC_DEPENDENCY
 export LIBRARY_NAME
 export LIBRARY_POSTFIX
 
 
 .DEFAULT_GOAL := help
-.PHONY: all clean help lib test
+.PHONY: all clean help lib test mkdir-lib
+
+$(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
+	@mkdir -p $(dir $@) $(DEP_PATH)
+	@$(CC) $(CC_FLAGS) $(CC_DEPENDENCY) $(DEP_PATH)/$*.d -c $< -o $@
+	@echo " + CC\t$<"
+
+$(EXTERNAL_OBJ_PATH)/%.o: $(EXTERNAL_SRC_PATH)/%.c
+	@mkdir -p $(EXTERNAL_OBJ_PATH)
+	@$(CC) $(CC_FLAGS) -c $< -o $@
+	@echo " + CC\t$<"
+
+# if DEP_PATH exist then search for all .d files in DEP_PATH
+ALL_DEPS                := 	$(shell if [ -d $(DEP_PATH) ]; then find $(DEP_PATH) -type f -name "*.d"; fi)
+-include $(ALL_DEPS)
 
 # Build the program
-all:
-	@echo "Building $(PROGRAM_NAME)..."
+all: $(OBJS) $(EXTERNAL_OBJS)
+	@$(CC) $(CC_FLAGS) $(OBJS) $(EXTERNAL_OBJS) -o $(PROGRAM_NAME)
+	@echo " + LD\t$(PROGRAM_NAME)"
+	@echo "Build program $(PROGRAM_NAME) successfully in $(CURDIR)"
 
 # Clean all build files
 clean:
 	@rm -rf $(BUILD_PATH)
 	@rm -rf $(LIB_PATH)
+	@rm -f $(PROGRAM_NAME)
 	@$(MAKE) -C $(TEST_PATH) clean
-
-# Clean all build file and cache (danger for performance)
-clean-all:
-	@rm -rf $(BUILD_PATH)
 
 # Show help
 help:
@@ -140,7 +164,24 @@ help:
 test:
 	@$(MAKE) -j4 -C $(TEST_PATH)
 
+# filter out the main.o file
+LIB_OBJS                :=  $(filter-out $(OBJ_PATH)/main.o, $(OBJS))
 # Build the library
-lib:
-	@echo "Building $(LIBRARY_NAME) library..."
+lib: mkdir-lib $(LIB_OBJS)
+ifeq ($(LIBRARY_BUILD_METHOD), STATIC)
+	@$(AR) rcs $(LIB_PATH)/$(LIBRARY_NAME)$(LIBRARY_POSTFIX) $(LIB_OBJS)
+	@echo " + AR\t$(LIBRARY_NAME)$(LIBRARY_POSTFIX)"
+else
+	@$(CC) $(CC_FLAGS) $(LIB_OBJS) -shared -o $(LIB_PATH)/$(LIBRARY_NAME)$(LIBRARY_POSTFIX)
+	@echo " + LD\t$(LIBRARY_NAME)$(LIBRARY_POSTFIX)"
+endif
+	@echo "Build $(LIBRARY_NAME)$(LIBRARY_POSTFIX) library in $(LIB_PATH)"
 
+# Make the lib directory
+mkdir-lib:
+	@mkdir -p $(LIB_PATH)
+
+# Clean all build file and cache (danger for performance)
+clean-all:
+	@rm -rf $(BUILD_PATH)
+	@$(MAKE) -C $(TEST_PATH) clean-all
