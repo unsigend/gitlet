@@ -1,4 +1,11 @@
-# Gitlet
+<p align="center">
+  <img src="assets/logo.png" alt="gitlet logo" width="300"/>
+</p>
+<p align="center">
+  <img src="https://img.shields.io/badge/license-MIT-green" />
+  <img src="https://img.shields.io/badge/version-0.1-yellow" />
+  <img src="https://img.shields.io/badge/language-C-blue" />
+</p>
 
 A Simple and lightweight version control system inspired by Git, implemented in C with Python test support. Gitlet provides core version control features while maintaining a minimal and efficient design. Mainly for studying purpose.
 
