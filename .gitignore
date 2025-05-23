@@ -10,3 +10,11 @@ build/
 # Ignore python cache
 __pycache__/
 
+# Ignore all the .o files
+*.o
+
+# Ignore all the .exe files
+*.exe
+
+# Ignore all the .out files
+*.out

@@ -30,6 +30,7 @@ CONFIG_PATH         	:= 	./config
 EXTERNAL_PATH       	:= 	./external
 LIB_PATH            	:= 	./lib
 TEST_PATH           	:= 	./test
+SCRIPT_PATH         	:= 	./script
 DEP_PATH            	:= 	$(BUILD_PATH)/dep
 
 OBJ_PATH            	:= 	$(BUILD_PATH)/obj
@@ -120,7 +121,7 @@ export LIBRARY_POSTFIX
 
 
 .DEFAULT_GOAL := help
-.PHONY: all clean help lib test mkdir-lib
+.PHONY: all clean help lib test mkdir-lib dep
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	@mkdir -p $(dir $@) $(DEP_PATH)
@@ -158,6 +159,7 @@ help:
 	@echo "  make help\t- Show this help"
 	@echo "  make lib\t- Build the $(LIBRARY_NAME) library"
 	@echo "  make test\t- Run the test cases"
+	@echo "  make dep\t- Install dependencies"
 	@echo ""
 
 # Test the program library
@@ -185,3 +187,7 @@ mkdir-lib:
 clean-all:
 	@rm -rf $(BUILD_PATH)
 	@$(MAKE) -C $(TEST_PATH) clean-all
+
+# Install dependencies
+dep:
+	@bash $(SCRIPT_PATH)/install-dep.sh
