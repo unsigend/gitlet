@@ -21,3 +21,6 @@ test/test_python/.venv/
 
 # Ignore all the .out files
 *.out
+
+# Ignore lib dir
+lib/

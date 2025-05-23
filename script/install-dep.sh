@@ -10,12 +10,12 @@ if [ "$HOST_OS" == "Linux" ]; then
     if [ -f /etc/debian_version ]; then
         # Install dependencies for Ubuntu/Debian
         sudo apt-get update
-        sudo apt-get install -y build-essential git python3 gcc make gdb
+        sudo apt-get install -y build-essential git python3 python3.10-venv gcc make gdb
     # Check if the system is CentOS/RHEL/Fedora
     elif [ -f /etc/redhat-release ]; then
         # Install dependencies for CentOS/RHEL/Fedora
         sudo yum update -y
-        sudo yum install -y gcc make gdb git python3
+        sudo yum install -y gcc make gdb git python3 python3.10-venv build-essential
     else
         echo "Unsupported Linux distribution for gitlet"
         exit 1

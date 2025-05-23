@@ -166,15 +166,15 @@ help:
 	@echo ""
 
 # Test the program library
-test:
+test: lib
 	@$(MAKE) -j4 -C $(TEST_PATH) test
 
 # Test the C test cases
-test-c:
+test-c: lib
 	@$(MAKE) -j4 -C $(TEST_PATH) test-c
 
 # Test the Python test cases
-test-py:
+test-py: lib
 	@$(MAKE) -j4 -C $(TEST_PATH) test-py
 
 # filter out the main.o file
@@ -196,7 +196,7 @@ mkdir-lib:
 
 # Clean all build file and cache (danger for performance)
 clean-all:
-	@rm -rf $(BUILD_PATH)
+	@$(MAKE) clean
 	@$(MAKE) -C $(TEST_PATH) clean-all
 
 # Install dependencies

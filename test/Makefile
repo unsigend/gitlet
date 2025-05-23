@@ -57,16 +57,25 @@ UTEST_INCLUDE_PATH    	:=  $(UTEST_PATH)/include
 UTEST_SRC_PATH        	:=  $(UTEST_PATH)/src
 
 CC_INCLUDES             :=  -I$(INCLUDE_PATH) -I$(UTEST_INCLUDE_PATH)
-CC_FLAGS                :=  -std=c11 $(CC_WARNINGS) $(CC_DEBUG) $(CC_OPTIMIZE) 
+CC_FLAGS                :=  -std=c11 $(CC_WARNINGS) $(CC_DEBUG) $(CC_OPTIMIZE) $(CC_INCLUDES)
 
+SRCS_C                 :=  $(shell find $(CTEST_PATH) -name "*.c")
+OBJS_C                 :=  $(patsubst $(CTEST_PATH)/%.c, $(BUILD_PATH)/%.o, $(SRCS_C))
 
+$(BUILD_PATH)/utest.o: $(UTEST_SRC_PATH)/utest.c
+	@$(CC) $(CC_FLAGS) -c $< -o $@
+
+$(BUILD_PATH)/%.o: $(CTEST_PATH)/%.c
+	@mkdir -p $(dir $@)
+	@$(CC) $(CC_FLAGS) -c $< -o $@
 
 .DEFAULT_GOAL  	:=    test
 .PHONY: test clean clean-all test-c test-py py-init
 
 # Test the C test cases
-test-c:
-	
+test-c: $(OBJS_C) $(BUILD_PATH)/utest.o
+	@$(CC) $(CC_FLAGS) $^ $(LIBRARY_PATH)/$(LIBRARY_NAME)$(LIBRARY_POSTFIX) -o $(BUILD_PATH)/test_c
+	@$(BUILD_PATH)/test_c
 
 # Test the Python test cases
 test-py: py-init
