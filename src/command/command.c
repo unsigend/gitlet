@@ -23,6 +23,8 @@
  */
 
 #include <util/macros.h>
+#include <util/str.h>
+
 #include <command/command.h>
 
 // include all command headers
@@ -60,5 +62,15 @@ const struct command commands_list[] = {
     {"status",          command_status},
     {"tag",             command_tag},
 };
-
+// define the size of the commands list
 const size_t commands_list_size = ARRAY_SIZE(commands_list);
+
+bool gitlet_run_command(const char * command, int argc, char *argv[]){
+    for (size_t i = 0; i < commands_list_size; i++){
+        if (str_equals(command, commands_list[i].command)){
+            commands_list[i].handler(argc, argv);
+            return true;
+        }
+    }
+    return false;
+}

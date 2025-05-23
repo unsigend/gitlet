@@ -22,3 +22,21 @@
  * SOFTWARE.
  */
 #include <util/str.h>
+
+#include <string.h>
+
+bool str_start_with(const char *str, const char *prefix){
+    return strncmp(str, prefix, strlen(prefix)) == 0;
+}
+
+bool str_end_with(const char *str, const char *suffix){
+    return strncmp(str + strlen(str) - strlen(suffix), suffix, strlen(suffix)) == 0;
+}
+
+bool str_contains(const char *str, const char *substr){
+    return strstr(str, substr) != NULL;
+}
+
+bool str_equals(const char *str1, const char *str2){
+    return strcmp(str1, str2) == 0;
+}

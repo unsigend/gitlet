@@ -25,6 +25,42 @@
 #ifndef GITLET_UTIL_STR_H
 #define GITLET_UTIL_STR_H
 
+/**
+ * @brief: string helper functions
+ */
 
+#include <stdbool.h>
+#include <stddef.h>
+
+/**
+ * @brief: check if the string starts with the prefix
+ * @param str: the string to check
+ * @param prefix: the prefix to check
+ * @return: true if the string starts with the prefix, false otherwise
+ */
+extern bool str_start_with(const char *str, const char *prefix);
+/**
+ * @brief: check if the string ends with the suffix
+ * @param str: the string to check
+ * @param suffix: the suffix to check
+ * @return: true if the string ends with the suffix, false otherwise
+ */
+extern bool str_end_with(const char *str, const char *suffix);
+
+/**
+ * @brief: check if the string contains the substring
+ * @param str: the string to check
+ * @param substr: the substring to check
+ * @return: true if the string contains the substring, false otherwise
+ */
+extern bool str_contains(const char *str, const char *substr);
+
+/**
+ * @brief: check if the two strings are equal
+ * @param str1: the first string
+ * @param str2: the second string
+ * @return: true if the two strings are equal, false otherwise
+ */
+extern bool str_equals(const char *str1, const char *str2);
 
 #endif // GITLET_UTIL_STR_H
