@@ -21,40 +21,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#ifndef GITLET_COMMAND_COMMIT_H
+#define GITLET_COMMAND_COMMIT_H
 
-#include <string.h>
-#include <stdbool.h>
+extern void command_commit(int argc, char *argv[]);
 
-#include <argparse.h>
-
-#include <command/command.h>
-#include <command/help.h>
-
-#include <util/macros.h>
-#include <util/error.h>
-
-int main(int argc, char *argv[]) {
-
-    if (argc == 1){
-        // no command just show help information
-
-    }else{
-        // dispatch sub-commands
-        
-        bool found_command = false;
-        for (size_t i = 0; i < commands_list_size; i++) {
-            if (strcmp(argv[1], commands_list[i].command) == 0) {
-                found_command = true;
-                commands_list[i].handler(argc - 1, argv + 1);
-                break;
-            }
-        }
-
-        if (!found_command) {
-            gitlet_panic("\'%s\' is not a gitlet command. See \'gitlet --help\'", argv[1]);
-        }
-    }
-
-    
-    return 0;
-}
+#endif // GITLET_COMMAND_COMMIT_H       

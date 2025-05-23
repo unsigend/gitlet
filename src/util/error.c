@@ -22,39 +22,21 @@
  * SOFTWARE.
  */
 
-#include <string.h>
-#include <stdbool.h>
-
-#include <argparse.h>
-
-#include <command/command.h>
-#include <command/help.h>
-
-#include <util/macros.h>
 #include <util/error.h>
+#include <util/macros.h>
 
-int main(int argc, char *argv[]) {
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
 
-    if (argc == 1){
-        // no command just show help information
+void gitlet_panic(const char *message, ...) {
+    va_list args;
+    va_start(args, message);
 
-    }else{
-        // dispatch sub-commands
-        
-        bool found_command = false;
-        for (size_t i = 0; i < commands_list_size; i++) {
-            if (strcmp(argv[1], commands_list[i].command) == 0) {
-                found_command = true;
-                commands_list[i].handler(argc - 1, argv + 1);
-                break;
-            }
-        }
+    fprintf(stderr, ASCII_COLOR_RED "gitlet" ASCII_COLOR_RESET ": ");
+    vfprintf(stderr, message, args);
+    fprintf(stderr, "\n");
 
-        if (!found_command) {
-            gitlet_panic("\'%s\' is not a gitlet command. See \'gitlet --help\'", argv[1]);
-        }
-    }
-
-    
-    return 0;
+    va_end(args);
+    exit(EXIT_FAILURE);
 }

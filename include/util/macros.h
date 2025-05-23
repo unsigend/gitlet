@@ -22,39 +22,36 @@
  * SOFTWARE.
  */
 
-#include <string.h>
-#include <stdbool.h>
+#ifndef GITLET_UTIL_MACROS_H
+#define GITLET_UTIL_MACROS_H
 
-#include <argparse.h>
+/**
+ * @brief : helper macros 
+*/
 
-#include <command/command.h>
-#include <command/help.h>
+// get the size of an array
+#define ARRAY_SIZE(ARRAY) (sizeof(ARRAY) / sizeof(ARRAY[0]))
 
-#include <util/macros.h>
-#include <util/error.h>
+// concatenate two strings
+#define _STRINGIFY(X)   #X
+#define STRINGIFY(X)    _STRINGIFY(X)
 
-int main(int argc, char *argv[]) {
+// concatenate macros
+#define _CONCAT(X, Y)       X##Y
+#define CONCAT(X, Y)        _CONCAT(X, Y)
+#define CONCAT3(X, Y, Z)    CONCAT(CONCAT(X, Y), Z)
 
-    if (argc == 1){
-        // no command just show help information
 
-    }else{
-        // dispatch sub-commands
-        
-        bool found_command = false;
-        for (size_t i = 0; i < commands_list_size; i++) {
-            if (strcmp(argv[1], commands_list[i].command) == 0) {
-                found_command = true;
-                commands_list[i].handler(argc - 1, argv + 1);
-                break;
-            }
-        }
+/**
+ * @brief : Utility macros for ASCII color codes
+ * 
+ */
+#define ASCII_COLOR_RED     "\033[31m"
+#define ASCII_COLOR_GREEN   "\033[32m"
+#define ASCII_COLOR_YELLOW  "\033[33m"
+#define ASCII_COLOR_BLUE    "\033[34m"
+#define ASCII_COLOR_MAGENTA "\033[35m"
+#define ASCII_COLOR_CYAN    "\033[36m"
+#define ASCII_COLOR_RESET   "\033[0m"
 
-        if (!found_command) {
-            gitlet_panic("\'%s\' is not a gitlet command. See \'gitlet --help\'", argv[1]);
-        }
-    }
-
-    
-    return 0;
-}
+#endif // GITLET_UTIL_MACROS_H
