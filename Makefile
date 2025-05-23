@@ -125,7 +125,7 @@ export LIBRARY_POSTFIX
 .PHONY: all clean help lib test mkdir-lib dep
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
-	@mkdir -p $(dir $@) $(DEP_PATH)
+	@mkdir -p $(dir $@) $(dir $(DEP_PATH)/$*.d)
 	@$(CC) $(CC_FLAGS) $(CC_DEPENDENCY) $(DEP_PATH)/$*.d -c $< -o $@
 	@echo " + CC\t$<"
 
