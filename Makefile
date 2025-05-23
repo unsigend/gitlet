@@ -52,6 +52,7 @@ CC                  	:= 	gcc
 CXX                 	:= 	g++
 AR                      := 	ar
 LD                      :=  $(CC)
+BASH                    := 	bash
 PYTHON               	:= 	python3
 
 # Variable for GCC compiler flags
@@ -158,13 +159,23 @@ help:
 	@echo "  make clean\t- Clean all build files"
 	@echo "  make help\t- Show this help"
 	@echo "  make lib\t- Build the $(LIBRARY_NAME) library"
-	@echo "  make test\t- Run the test cases"
+	@echo "  make test\t- Run all test cases"
+	@echo "  make test-c\t- Run the C test cases"
+	@echo "  make test-py\t- Run the Python test cases"
 	@echo "  make dep\t- Install dependencies"
 	@echo ""
 
 # Test the program library
 test:
-	@$(MAKE) -j4 -C $(TEST_PATH)
+	@$(MAKE) -j4 -C $(TEST_PATH) test
+
+# Test the C test cases
+test-c:
+	@$(MAKE) -j4 -C $(TEST_PATH) test-c
+
+# Test the Python test cases
+test-py:
+	@$(MAKE) -j4 -C $(TEST_PATH) test-py
 
 # filter out the main.o file
 LIB_OBJS                :=  $(filter-out $(OBJ_PATH)/main.o, $(OBJS))
@@ -190,4 +201,4 @@ clean-all:
 
 # Install dependencies
 dep:
-	@bash $(SCRIPT_PATH)/install-dep.sh
+	@$(BASH) $(SCRIPT_PATH)/install-dep.sh

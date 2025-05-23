@@ -8,7 +8,10 @@ build/
 .pytest_cache/
 
 # Ignore python cache
-__pycache__/
+test/test_python/__pycache__/
+
+# Ignore python venv
+test/test_python/.venv/
 
 # Ignore all the .o files
 *.o

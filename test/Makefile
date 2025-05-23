@@ -25,15 +25,74 @@
 # - Some of the core features are tested using C : Utest Framework
 # - Some of the features are tested using Python : Pytest Framework
 
+# Get these variables from the root Makefile
+# export PYTHON
+# export CC
+# export CC_WARNINGS
+# export CC_DEBUG
+# export CC_OPTIMIZE
+# export CC_DEPENDENCY
+# export LIBRARY_NAME
+# export LIBRARY_POSTFIX
 
-.DEFAULT_GOAL  :=    test
-.PHONY: test clean
+# Tools variables
+PIP                     :=  pip
+PYTEST                  :=  pytest
+
+# Main test path
+TEST_PATH               :=  ./test
+PYTEST_PATH             :=  ./test_python
+CTEST_PATH              :=  ./test_c
+
+# Current directory Path
+BUILD_PATH              :=  ./build
+
+# Root Path
+LIBRARY_PATH 			:= 	../lib
+INCLUDE_PATH     		:=  ../include
+
+# Utest path
+UTEST_PATH      		:=  ./utest
+UTEST_INCLUDE_PATH    	:=  $(UTEST_PATH)/include
+UTEST_SRC_PATH        	:=  $(UTEST_PATH)/src
+
+CC_INCLUDES             :=  -I$(INCLUDE_PATH) -I$(UTEST_INCLUDE_PATH)
+CC_FLAGS                :=  -std=c11 $(CC_WARNINGS) $(CC_DEBUG) $(CC_OPTIMIZE) 
 
 
-# Test the gitlet library
-test:
-	@echo "Running test cases..."
 
-# Clean all build files
+.DEFAULT_GOAL  	:=    test
+.PHONY: test clean clean-all test-c test-py py-init
+
+# Test the C test cases
+test-c:
+	
+
+# Test the Python test cases
+test-py: py-init
+	@. $(PYTEST_PATH)/.venv/bin/activate && \
+	$(PYTEST_PATH)/.venv/bin/pytest $(PYTEST_PATH) && \
+	deactivate
+
+# Test all the cases for gitlet library
+test: test-c test-py
+	
+# Clean build files
 clean:
-	@:
+	@rm -rf $(BUILD_PATH)
+
+# Clean all build files and cache files
+clean-all:
+	@$(MAKE) clean
+	@rm -rf $(PYTEST_PATH)/.venv
+	@rm -rf $(PYTEST_PATH)/__pycache__
+
+# Initialize the Python test environment
+py-init:
+	@python3 -m venv $(PYTEST_PATH)/.venv
+	@. $(PYTEST_PATH)/.venv/bin/activate && \
+	pip install pytest && \
+	deactivate
+	@clear
+	
+	
