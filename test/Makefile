@@ -79,9 +79,7 @@ test-c: $(OBJS_C) $(BUILD_PATH)/utest.o
 
 # Test the Python test cases
 test-py: py-init
-	@. $(PYTEST_PATH)/.venv/bin/activate && \
-	$(PYTEST_PATH)/.venv/bin/pytest $(PYTEST_PATH) && \
-	deactivate
+	@$(PYTEST_PATH)/.venv/bin/pytest $(PYTEST_PATH)
 
 # Test all the cases for gitlet library
 test: test-c test-py
@@ -98,10 +96,16 @@ clean-all:
 
 # Initialize the Python test environment
 py-init:
-	@python3 -m venv $(PYTEST_PATH)/.venv
-	@. $(PYTEST_PATH)/.venv/bin/activate && \
-	pip install pytest && \
-	deactivate
+	@if [ ! -d "$(PYTEST_PATH)/.venv" ]; then \
+		$(PYTHON) -m venv $(PYTEST_PATH)/.venv; \
+		. $(PYTEST_PATH)/.venv/bin/activate; \
+		pip install pytest; \
+	else \
+		. $(PYTEST_PATH)/.venv/bin/activate; \
+		if ! pip list | grep -q "^pytest "; then \
+			pip install pytest; \
+		fi; \
+	fi
 	@clear
 	
 	
