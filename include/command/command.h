@@ -29,29 +29,14 @@
  * @brief Main header for command module
  */
 
-#include <stddef.h>
 #include <stdbool.h>
-
-// type of sub-command handler function
-typedef void (*command_handler)(int argc, char *argv[]);
-
-// structure of sub-command
-struct command{
-    const char * command;
-    const command_handler handler;
-};
-
-// define the commands list
-extern const struct command commands_list[];
-// define the size of the commands list
-extern const size_t commands_list_size;
 
 /**
  * @brief: Run the sub-command with the given arguments
  * @param command: the command to run
  * @param argc: the number of arguments
  * @param argv: the arguments
- * @return: true if the command is found, false otherwise
+ * @return: true if the command is found and executed, false otherwise
  */
 extern bool gitlet_run_command(const char * command, int argc, char *argv[]);
 

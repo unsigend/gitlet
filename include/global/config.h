@@ -22,9 +22,15 @@
  * SOFTWARE.
  */
 
-#ifndef GITLET_COMMAND_HELP_H
-#define GITLET_COMMAND_HELP_H
+#ifndef GITLET_GLOBAL_CONFIG_H
+#define GITLET_GLOBAL_CONFIG_H
 
-extern void command_help(int argc, char *argv[]);
+#define GITLET_VERSION_MAJOR 0
+#define GITLET_VERSION_MINOR 1
+#define GITLET_VERSION_PATCH 0
 
-#endif // GITLET_COMMAND_HELP_H
+#define GITLET_VERSION_STRING       "0.1.0"
+
+#define GITLET_DOCUMENTATION_URL    "https://github.com/unsigend/gitlet"
+
+#endif // GITLET_GLOBAL_CONFIG_H

@@ -30,7 +30,6 @@
  */
 
 #include <stdbool.h>
-#include <stddef.h>
 
 /**
  * @brief: check if the string starts with the prefix

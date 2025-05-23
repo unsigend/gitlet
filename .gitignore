@@ -24,3 +24,6 @@ test/test_python/.venv/
 
 # Ignore lib dir
 lib/
+
+# Ignore gitlet executable
+gitlet

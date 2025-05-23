@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+#include <stddef.h>
 
 #include <util/macros.h>
 #include <util/str.h>
@@ -34,6 +35,7 @@
 #include <command/check-ignore.h>
 #include <command/checkout.h>
 #include <command/hash-object.h>
+#include <command/help.h>
 #include <command/init.h>
 #include <command/log.h>
 #include <command/ls-files.h>
@@ -44,14 +46,24 @@
 #include <command/status.h>
 #include <command/tag.h>
 
+// type of sub-command handler function
+typedef void (*command_handler)(int argc, char *argv[]);
+
+// structure of sub-command
+struct command{
+    const char * command;
+    const command_handler handler;
+};
+
 // define the commands list
-const struct command commands_list[] = {
+static const struct command commands_list[] = {
     {"add",             command_add},
     {"cat-file",        command_cat_file},
     {"check-ignore",    command_check_ignore},
     {"checkout",        command_checkout},
     {"commit",          command_commit},
     {"hash-object",     command_hash_object},
+    {"help",            command_help},
     {"init",            command_init},
     {"log",             command_log},
     {"ls-files",        command_ls_files},
@@ -62,11 +74,9 @@ const struct command commands_list[] = {
     {"status",          command_status},
     {"tag",             command_tag},
 };
-// define the size of the commands list
-const size_t commands_list_size = ARRAY_SIZE(commands_list);
 
 bool gitlet_run_command(const char * command, int argc, char *argv[]){
-    for (size_t i = 0; i < commands_list_size; i++){
+    for (size_t i = 0; i < ARRAY_SIZE(commands_list); i++){
         if (str_equals(command, commands_list[i].command)){
             commands_list[i].handler(argc, argv);
             return true;

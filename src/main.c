@@ -22,20 +22,43 @@
  * SOFTWARE.
  */
 
-#include <string.h>
-#include <stdbool.h>
+// standard library headers
+#include <stdio.h>
+#include <stdlib.h>
 
-#include <argparse.h>
-
+// command module headers
 #include <command/command.h>
-#include <command/help.h>
 
-#include <util/macros.h>
+// util module headers
 #include <util/error.h>
+#include <util/str.h>
+
+// gitlet global config
+#include <global/config.h>
 
 int main(int argc, char *argv[]) {
 
-
+    if (argc == 1){
+        // no sub-command just show help information and exit
+        gitlet_run_command("help", 0, NULL);
+    }else{
+        // if the the second argument is not a sub-command
+        if (str_start_with(argv[1], "-") || str_start_with(argv[1], "--")){
+            if (str_equals(argv[1], "-h") || str_equals(argv[1], "--help")){
+                gitlet_run_command("help", 0, NULL);
+            }else if (str_equals(argv[1], "-v") || str_equals(argv[1], "--version")){
+                fprintf(stdout, "gitlet version %s\n", GITLET_VERSION_STRING);
+            }else{
+                gitlet_panic("%s is not a gitlet command. See \'gitlet --help\'", argv[1]);
+            }
+        }
+        // if the second argument is a sub-command
+        else{
+            if (!gitlet_run_command(argv[1], argc - 1, argv + 1)){
+                gitlet_panic("\'%s\' is not a gitlet command. See \'gitlet --help\'", argv[1]);
+            }
+        }
+    }
     
-    return 0;
+    return EXIT_SUCCESS;
 }

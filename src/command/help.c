@@ -24,3 +24,54 @@
 
 #include <command/help.h>
 
+#include <global/config.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// print command information and fill the space and left-align
+#define PRINT_COMMAND_HELP(CMD, DESC) \
+    fprintf(stdout, "   %-12s %s\n", CMD, DESC)
+// print group information
+#define PRINT_GROUP_BEGIN(MSG) \
+    fprintf(stdout, "%s\n", MSG)
+// print group end
+#define PRINT_GROUP_END() \
+    fputc('\n', stdout);
+
+static inline void print_help_header(){
+    printf("gitlet version %s\n", GITLET_VERSION_STRING);
+    printf("Usage: gitlet [-v | --version] [-h | --help] <command> [<args>]\n\n");
+}
+
+static inline void print_help_footer(){
+    printf("See \'gitlet --help\' for more information.\n");
+    printf("For more detailed documentation, see <%s>\n", GITLET_DOCUMENTATION_URL);
+}
+
+static inline void print_help_information(){
+    PRINT_GROUP_BEGIN("Setup and Configure Gitlet");
+    PRINT_COMMAND_HELP("init", "Create an empty Gitlet repository or reinitialize an existing one");
+    PRINT_COMMAND_HELP("config", "Set configuration options for Gitlet");
+    PRINT_GROUP_END();
+
+    PRINT_GROUP_BEGIN("Work on current changes");
+    PRINT_COMMAND_HELP("add", "Add files to the staging area");
+    PRINT_COMMAND_HELP("rm", "Remove files from the staging area");
+    PRINT_GROUP_END();
+
+    PRINT_GROUP_BEGIN("Examine the history and state");
+    PRINT_COMMAND_HELP("log", "Show commit logs");
+    PRINT_COMMAND_HELP("status", "Show the working tree status");
+    PRINT_GROUP_END();
+}
+void command_help(int argc, char *argv[]){
+    (void)argc;
+    (void)argv;
+
+    print_help_header();
+    print_help_information();
+    print_help_footer();
+    fflush(stdout);
+    exit(EXIT_SUCCESS);
+}
