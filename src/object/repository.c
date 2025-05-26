@@ -23,17 +23,18 @@
  */
 
 #include <string.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #include <object/repository.h>
 #include <util/error.h>
 #include <util/files.h>
 
-#define PATH_BUFFER_SIZE 512
-static char gitlet_repo_path[PATH_BUFFER_SIZE];
+static char gitlet_repo_path[PATH_MAX];
 
 void repository_object_init(struct repository * this, const char * path, bool force){
     this->working_tree_path = path;
-    memset(gitlet_repo_path, 0, PATH_BUFFER_SIZE);
+    memset(gitlet_repo_path, 0, PATH_MAX);
     strcpy(gitlet_repo_path, this->working_tree_path);
     strcat(gitlet_repo_path, "/.gitlet");
     this->gitlet_repo_path = gitlet_repo_path;

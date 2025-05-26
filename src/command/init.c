@@ -22,11 +22,29 @@
  * SOFTWARE.
  */
 
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/stat.h>
+
 #include <command/init.h>
 #include <global/config.h>
+#include <util/error.h>
+#include <util/files.h>
 
 #include <argparse.h>
 
 void command_init(int argc, char *argv[]) {
-    
+    (void)argc;
+    (void)argv;
+
+    char current_path[PATH_MAX];
+    if (!getcwd(current_path, PATH_MAX)){
+        gitlet_panic("fatal: failed to get current working directory");
+    }
+    if (!create_directory(".gitlet")){
+        gitlet_panic("fatal: failed to create .gitlet directory");
+        
+    }
+
+    fprintf(stdout, "Initialized empty gitlet repository in %s\n", current_path);
 }

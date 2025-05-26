@@ -102,6 +102,12 @@ This will:
 - Compile all source files with optimizations
 - Link against required libraries
 - Generate debug symbols if DEBUG=1 is set
+### Add Program to Global Environment
+Using this command to add the program to your global shell environment. And when you want to use test cases for the program you must use it.
+```bash
+make add-env
+```
+After this command you just need using `source` to update the variable. 
 
 ### Building the Library
 It is optional to build the gitlet library:
@@ -149,6 +155,7 @@ make test-py
 - `make lib` - Build the gitlet library
 - `make clean` - Clean build files
 - `make clean-all` - Clean all files including Python environment
+- `make add-env` - Export the program to the PATH variable
 
 ### Test Commands
 - `make test` - Run all tests
