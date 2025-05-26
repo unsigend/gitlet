@@ -209,13 +209,13 @@ SHELL_NAME = $(shell echo $$SHELL)
 add-env:
 ifeq ($(SHELL_NAME), /bin/bash)
 	@echo "export PATH=$(CURDIR):$$PATH" >> ~/.bashrc
-	@source ~/.bashrc
+	@echo "Use command 'source ~/.bashrc' to update the env variable"
 else ifeq ($(SHELL_NAME), /bin/zsh)
 	@echo "export PATH=$(CURDIR):$$PATH" >> ~/.zshrc
-	@source ~/.zshrc
+	@echo "Use command 'source ~/.zshrc' to update the env variable"
 else ifeq ($(SHELL_NAME), /bin/sh)
 	@echo "export PATH=$(CURDIR):$$PATH" >> ~/.profile
-	@source ~/.profile
+	@echo "Use command 'source ~/.profile' to update the env variable"
 else
 	@echo "Unsupported shell: $(SHELL_NAME)"
 endif

@@ -11,7 +11,7 @@ UTEST_TEST_CASE(exists){
     char current_dir[512];
     char current_dir_const[64];
 
-    getcwd(current_dir, sizeof(current_dir));
+    EXPECT_NOT_NULL(getcwd(current_dir, sizeof(current_dir)));
     strcpy(current_dir_const, current_dir);
     const size_t current_dir_len = strlen(current_dir_const);
 
