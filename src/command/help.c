@@ -51,8 +51,8 @@ static inline void print_help_footer(){
 
 static inline void print_help_information(){
     PRINT_GROUP_BEGIN("Setup and Configure Gitlet");
-    PRINT_COMMAND_HELP("init", "Create an empty Gitlet repository or reinitialize an existing one");
-    PRINT_COMMAND_HELP("config", "Set configuration options for Gitlet");
+    PRINT_COMMAND_HELP("init", "Create an empty gitlet repository or reinitialize an existing one");
+    PRINT_COMMAND_HELP("config", "Set configuration options for gitlet");
     PRINT_GROUP_END();
 
     PRINT_GROUP_BEGIN("Work on current changes");
