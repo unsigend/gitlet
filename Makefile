@@ -122,7 +122,7 @@ export LIBRARY_POSTFIX
 
 
 .DEFAULT_GOAL := help
-.PHONY: all clean help lib test mkdir-lib dep
+.PHONY: all clean help lib test mkdir-lib dep add-env
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	@mkdir -p $(dir $@) $(dir $(DEP_PATH)/$*.d)
@@ -163,10 +163,11 @@ help:
 	@echo "  make test-c\t- Run the C test cases"
 	@echo "  make test-py\t- Run the Python test cases"
 	@echo "  make dep\t- Install dependencies"
+	@echo "  make add-env\t- Export the program to the PATH variable"
 	@echo ""
 
 # Test the program library
-test: lib
+test: lib all
 	@$(MAKE) -j4 -C $(TEST_PATH) test
 
 # Test the C test cases
@@ -174,7 +175,7 @@ test-c: lib
 	@$(MAKE) -j4 -C $(TEST_PATH) test-c
 
 # Test the Python test cases
-test-py: lib
+test-py: lib all
 	@$(MAKE) -j4 -C $(TEST_PATH) test-py
 
 # filter out the main.o file
@@ -202,3 +203,19 @@ clean-all:
 # Install dependencies
 dep:
 	@$(BASH) $(SCRIPT_PATH)/install-dep.sh
+
+# Export the program to the shell environment
+SHELL_NAME = $(shell echo $$SHELL)
+add-env:
+ifeq ($(SHELL_NAME), /bin/bash)
+	@echo "export PATH=$(CURDIR):$$PATH" >> ~/.bashrc
+	@source ~/.bashrc
+else ifeq ($(SHELL_NAME), /bin/zsh)
+	@echo "export PATH=$(CURDIR):$$PATH" >> ~/.zshrc
+	@source ~/.zshrc
+else ifeq ($(SHELL_NAME), /bin/sh)
+	@echo "export PATH=$(CURDIR):$$PATH" >> ~/.profile
+	@source ~/.profile
+else
+	@echo "Unsupported shell: $(SHELL_NAME)"
+endif

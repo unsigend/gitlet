@@ -75,6 +75,7 @@ $(BUILD_PATH)/%.o: $(CTEST_PATH)/%.c
 # Test the C test cases
 test-c: $(OBJS_C) $(BUILD_PATH)/utest.o
 	@$(CC) $(CC_FLAGS) $^ $(LIBRARY_PATH)/$(LIBRARY_NAME)$(LIBRARY_POSTFIX) -o $(BUILD_PATH)/test_c
+	@clear
 	@$(BUILD_PATH)/test_c
 
 # Test the Python test cases
