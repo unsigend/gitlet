@@ -22,17 +22,5 @@
  * SOFTWARE.
  */
 
-#ifndef GITLET_GLOBAL_CONFIG_H
-#define GITLET_GLOBAL_CONFIG_H
+#include <object/repository.h>
 
-#define GITLET_VERSION_MAJOR 0
-#define GITLET_VERSION_MINOR 1
-#define GITLET_VERSION_PATCH 0
-
-#define GITLET_VERSION_STRING       "0.1.0"
-
-#define GITLET_DOCUMENTATION_URL    "https://github.com/unsigend/gitlet"
-
-#define GITLET_REPO_DIR             ".gitlet"
-
-#endif // GITLET_GLOBAL_CONFIG_H

@@ -89,7 +89,7 @@ UTEST_TEST_CASE(str_equals){
 }
 
 
-UTEST_TEST_SUITE(test_str){
+UTEST_TEST_SUITE(str){
     UTEST_RUN_TEST_CASE(str_start_with);
     UTEST_RUN_TEST_CASE(str_end_with);
     UTEST_RUN_TEST_CASE(str_contains);

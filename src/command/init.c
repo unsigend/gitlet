@@ -23,6 +23,9 @@
  */
 
 #include <command/init.h>
+#include <global/config.h>
+
+#include <argparse.h>
 
 void command_init(int argc, char *argv[]) {
     

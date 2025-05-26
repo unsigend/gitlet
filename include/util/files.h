@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-#ifndef GITLET_GLOBAL_CONFIG_H
-#define GITLET_GLOBAL_CONFIG_H
+#ifndef GITLET_UTIL_FILES_H
+#define GITLET_UTIL_FILES_H
 
-#define GITLET_VERSION_MAJOR 0
-#define GITLET_VERSION_MINOR 1
-#define GITLET_VERSION_PATCH 0
+#include <stdbool.h>
 
-#define GITLET_VERSION_STRING       "0.1.0"
+/**
+ * @brief Check if a file or directory exists
+ * 
+ * @param path The path to check
+ * @return true if the file or directory exists, false otherwise
+ */
+extern bool exists(const char * path);
 
-#define GITLET_DOCUMENTATION_URL    "https://github.com/unsigend/gitlet"
-
-#define GITLET_REPO_DIR             ".gitlet"
-
-#endif // GITLET_GLOBAL_CONFIG_H
+#endif // GITLET_UTIL_FILES_H

@@ -22,17 +22,11 @@
  * SOFTWARE.
  */
 
-#ifndef GITLET_GLOBAL_CONFIG_H
-#define GITLET_GLOBAL_CONFIG_H
+#include <util/files.h>
 
-#define GITLET_VERSION_MAJOR 0
-#define GITLET_VERSION_MINOR 1
-#define GITLET_VERSION_PATCH 0
+#include <sys/stat.h>
 
-#define GITLET_VERSION_STRING       "0.1.0"
-
-#define GITLET_DOCUMENTATION_URL    "https://github.com/unsigend/gitlet"
-
-#define GITLET_REPO_DIR             ".gitlet"
-
-#endif // GITLET_GLOBAL_CONFIG_H
+bool exists(const char * path){
+    struct stat status;
+    return stat(path, &status) == 0;
+}
