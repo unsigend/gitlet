@@ -91,8 +91,9 @@ clean:
 # Clean all build files and cache files
 clean-all:
 	@$(MAKE) clean
+	@rm -rf $(PYTEST_PATH)/**/__pycache__
 	@rm -rf $(PYTEST_PATH)/.venv
-	@rm -rf $(PYTEST_PATH)/__pycache__
+	@rm -rf .pytest_cache
 
 # Initialize the Python test environment
 py-init:

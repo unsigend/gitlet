@@ -7,8 +7,8 @@ build/
 # Ignore pytest cache
 .pytest_cache/
 
-# Ignore python cache
-test/test_python/__pycache__/
+# Ignore all python cache in all directory
+test/test_python/**/__pycache__/
 
 # Ignore python venv
 test/test_python/.venv/
