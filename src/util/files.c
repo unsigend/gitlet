@@ -24,9 +24,32 @@
 
 #include <util/files.h>
 
+#include <stdio.h>
+#include <unistd.h>
 #include <sys/stat.h>
+
+#define DEFAULT_DIR_PERMISSION  0755
 
 bool exists(const char * path){
     struct stat status;
     return stat(path, &status) == 0;
+}
+
+bool create_directory(const char * path){
+    return mkdir(path, DEFAULT_DIR_PERMISSION) == 0;
+}
+bool create_file(const char * file_name){
+    FILE * file = fopen(file_name, "w");
+    if (file != NULL){
+        fclose(file);
+        return true;
+    }
+    return false;
+}
+
+bool remove_directory(const char * path){
+    return rmdir(path) == 0;
+}
+bool remove_file(const char * file_name){
+    return remove(file_name) == 0;
 }

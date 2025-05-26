@@ -22,5 +22,27 @@
  * SOFTWARE.
  */
 
-#include <object/repository.h>
+#include <string.h>
 
+#include <object/repository.h>
+#include <util/error.h>
+#include <util/files.h>
+
+#define PATH_BUFFER_SIZE 512
+static char gitlet_repo_path[PATH_BUFFER_SIZE];
+
+void repository_object_init(struct repository * this, const char * path, bool force){
+    this->working_tree_path = path;
+    memset(gitlet_repo_path, 0, PATH_BUFFER_SIZE);
+    strcpy(gitlet_repo_path, this->working_tree_path);
+    strcat(gitlet_repo_path, "/.gitlet");
+    this->gitlet_repo_path = gitlet_repo_path;
+
+    // error check
+    if (!force){
+        // only the force option is disable then do the error check
+        if (!exists(this->gitlet_repo_path)){
+            gitlet_panic("Not a gitlet repository");
+        }
+    }
+}

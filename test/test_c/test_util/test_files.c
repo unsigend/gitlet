@@ -50,7 +50,22 @@ UTEST_TEST_CASE(exists){
     EXPECT_TRUE(exists(current_dir));
     memset(current_dir, 0, sizeof(current_dir));
 }
-
+UTEST_TEST_CASE(directory){
+    EXPECT_FALSE(exists("temp"));
+    EXPECT_TRUE(create_directory("temp"));
+    EXPECT_TRUE(exists("temp"));
+    EXPECT_TRUE(remove_directory("temp"));
+    EXPECT_FALSE(exists("temp"));
+}
+UTEST_TEST_CASE(file){
+    EXPECT_FALSE(exists("temp.txt"));
+    EXPECT_TRUE(create_file("temp.txt"));
+    EXPECT_TRUE(exists("temp.txt"));
+    EXPECT_TRUE(remove_file("temp.txt"));
+    EXPECT_FALSE(exists("temp.txt"));
+}
 UTEST_TEST_SUITE(files){
     UTEST_RUN_TEST_CASE(exists);
+    UTEST_RUN_TEST_CASE(directory);
+    UTEST_RUN_TEST_CASE(file);
 }

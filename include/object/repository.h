@@ -25,9 +25,20 @@
 #ifndef GITLET_OBJECT_REPOSITORY_H
 #define GITLET_OBJECT_REPOSITORY_H
 
+#include <stdbool.h>
+
 struct repository{
     const char * working_tree_path;
     const char * gitlet_repo_path;
 };
+
+/**
+ * @brief: Initialize the repository object
+ * @param this: The repository object to initialize
+ * @param path: The path to the repository
+ * @param force: Whether to force disable the error check
+ */
+extern void repository_object_init(struct repository * this, const char * path, bool force);
+
 
 #endif // GITLET_OBJECT_REPOSITORY_H

@@ -35,4 +35,36 @@
  */
 extern bool exists(const char * path);
 
+/**
+ * @brief Create a directory
+ * 
+ * @param path The path to the directory
+ * @return true if the directory is created, false otherwise
+ */
+extern bool create_directory(const char * path);
+
+/**
+ * @brief Create a file
+ * 
+ * @param file_name The name of the file
+ * @return true if the file is created, false otherwise
+ */
+extern bool create_file(const char * file_name);
+
+/**
+ * @brief Remove a directory
+ * 
+ * @param path The path to the directory
+ * @return true if the directory is removed, false otherwise
+ */
+extern bool remove_directory(const char * path);
+
+/**
+ * @brief Remove a file
+ * 
+ * @param file_name The name of the file
+ * @return true if the file is removed, false otherwise
+ */
+extern bool remove_file(const char * file_name);
+
 #endif // GITLET_UTIL_FILES_H

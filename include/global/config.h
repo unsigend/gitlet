@@ -33,6 +33,4 @@
 
 #define GITLET_DOCUMENTATION_URL    "https://github.com/unsigend/gitlet"
 
-#define GITLET_REPO_DIR             ".gitlet"
-
 #endif // GITLET_GLOBAL_CONFIG_H
