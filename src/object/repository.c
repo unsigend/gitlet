@@ -25,6 +25,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <stdio.h>
 
 #include <object/repository.h>
 #include <util/error.h>
@@ -40,10 +41,99 @@ void repository_object_init(struct repository * this, const char * path, bool fo
     this->gitlet_repo_path = gitlet_repo_path;
 
     // error check
-    if (!force){
+    if (force){
         // only the force option is disable then do the error check
         if (!exists(this->gitlet_repo_path)){
             gitlet_panic("Not a gitlet repository");
         }
+    }
+}
+
+void repository_create(const char * path){
+    struct repository this;
+
+    repository_object_init(&this, path, false);
+
+    /// error checking
+
+    // not a directory
+    if (exists(this.working_tree_path) && !is_directory(this.working_tree_path)){
+        gitlet_panic("Not a directory: %s", this.working_tree_path);
+    }
+    // .git filename conflict
+    if (exists(this.gitlet_repo_path) && !is_directory(this.gitlet_repo_path)){
+        gitlet_panic("unable to mkdir .gitlet: File exists", this.gitlet_repo_path);
+    }
+
+    // already a repository
+    if (exists(this.gitlet_repo_path)){
+        fprintf(stdout, "Reinitialized existing gitlet repository in %s\n", this.gitlet_repo_path);
+        return;
+    }
+
+    // create working tree directory
+    if (!exists(this.working_tree_path)){
+        if (!create_directory(this.working_tree_path)){
+            gitlet_panic("fatal: unable to mkdir %s", this.working_tree_path);
+        }
+    }
+
+    // create .gitlet directory
+    if (!create_directory(this.gitlet_repo_path)){
+        gitlet_panic("fatal: unable to mkdir %s", this.gitlet_repo_path);
+    }else{
+        fprintf(stdout, "Initialized empty gitlet repository in %s\n", this.gitlet_repo_path);
+    }
+
+    char path_buffer[PATH_MAX];
+    memset(path_buffer, 0, PATH_MAX);
+
+    // create .gitlet/objects directory
+    strcpy(path_buffer, this.gitlet_repo_path);
+    strcat(path_buffer, "/objects");
+    if (!create_directory(path_buffer)){
+        gitlet_panic("fatal: unable to mkdir %s", path_buffer);
+    }
+
+    // create .gitlet/refs directory
+    strcpy(path_buffer, this.gitlet_repo_path);
+    strcat(path_buffer, "/refs");
+    if (!create_directory(path_buffer)){
+        gitlet_panic("fatal: unable to mkdir %s", path_buffer);
+    }
+
+    // create .gitlet/refs/heads directory
+    strcpy(path_buffer, this.gitlet_repo_path);
+    strcat(path_buffer, "/refs/heads");
+    if (!create_directory(path_buffer)){
+        gitlet_panic("fatal: unable to mkdir %s", path_buffer);
+    }
+
+    // create .gitlet/refs/tags directory
+    strcpy(path_buffer, this.gitlet_repo_path);
+    strcat(path_buffer, "/refs/tags");
+    if (!create_directory(path_buffer)){
+        gitlet_panic("fatal: unable to mkdir %s", path_buffer);
+    }
+
+    // create .gitlet/HEAD file
+    strcpy(path_buffer, this.gitlet_repo_path);
+    strcat(path_buffer, "/HEAD");
+    if (!create_file(path_buffer)){
+        gitlet_panic("fatal: unable to create file %s", path_buffer);
+    }
+
+    // create .gitlet/config file
+    strcpy(path_buffer, this.gitlet_repo_path);
+    strcat(path_buffer, "/config");
+    if (!create_file(path_buffer)){
+        gitlet_panic("fatal: unable to create file %s", path_buffer);
+    }
+
+    // create .gitlet/description file
+    strcpy(path_buffer, this.gitlet_repo_path);
+    strcat(path_buffer, "/description");
+    if (!create_file(path_buffer)){
+        gitlet_panic("fatal: unable to create file %s", path_buffer);
     }
 }

@@ -67,4 +67,12 @@ extern bool remove_directory(const char * path);
  */
 extern bool remove_file(const char * file_name);
 
+/**
+ * @brief Check if a path is a directory
+ * 
+ * @param path The path to check
+ * @return true if the path is a directory, false otherwise
+ */
+extern bool is_directory(const char * path);
+
 #endif // GITLET_UTIL_FILES_H

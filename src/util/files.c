@@ -53,3 +53,8 @@ bool remove_directory(const char * path){
 bool remove_file(const char * file_name){
     return remove(file_name) == 0;
 }
+
+bool is_directory(const char * path){
+    struct stat status;
+    return stat(path, &status) == 0 && S_ISDIR(status.st_mode);
+} 

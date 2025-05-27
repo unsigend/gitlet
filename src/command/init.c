@@ -30,6 +30,7 @@
 #include <global/config.h>
 #include <util/error.h>
 #include <util/files.h>
+#include <object/repository.h>
 
 #include <argparse.h>
 
@@ -41,10 +42,6 @@ void command_init(int argc, char *argv[]) {
     if (!getcwd(current_path, PATH_MAX)){
         gitlet_panic("fatal: failed to get current working directory");
     }
-    if (!create_directory(".gitlet")){
-        gitlet_panic("fatal: failed to create .gitlet directory");
-        
-    }
 
-    fprintf(stdout, "Initialized empty gitlet repository in %s\n", current_path);
+    repository_create(current_path);
 }

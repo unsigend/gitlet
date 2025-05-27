@@ -64,6 +64,23 @@ UTEST_TEST_CASE(file){
     EXPECT_TRUE(remove_file("temp.txt"));
     EXPECT_FALSE(exists("temp.txt"));
 }
+UTEST_TEST_CASE(is_directory){
+    EXPECT_TRUE(is_directory("."));
+    EXPECT_FALSE(is_directory("nonexistent"));
+
+    EXPECT_TRUE(create_directory("temp"));
+    EXPECT_TRUE(is_directory("temp"));
+    EXPECT_TRUE(remove_directory("temp"));
+
+    EXPECT_TRUE(create_file("temp.txt"));
+    EXPECT_FALSE(is_directory("temp.txt"));
+    EXPECT_TRUE(remove_file("temp.txt"));
+
+    EXPECT_TRUE(create_directory("temp"));
+    EXPECT_TRUE(create_file("temp/temp.txt"));
+    EXPECT_TRUE(is_directory("temp"));
+    EXPECT_TRUE(remove_directory("temp"));
+}
 UTEST_TEST_SUITE(files){
     UTEST_RUN_TEST_CASE(exists);
     UTEST_RUN_TEST_CASE(directory);

@@ -36,9 +36,14 @@ struct repository{
  * @brief: Initialize the repository object
  * @param this: The repository object to initialize
  * @param path: The path to the repository
- * @param force: Whether to force disable the error check
+ * @param check: Whether to enable the error check
  */
-extern void repository_object_init(struct repository * this, const char * path, bool force);
+extern void repository_object_init(struct repository * this, const char * path, bool check);
 
+/**
+ * @brief: Create a new repository
+ * @param path: The path to the repository
+ */
+extern void repository_create(const char * path);
 
 #endif // GITLET_OBJECT_REPOSITORY_H
