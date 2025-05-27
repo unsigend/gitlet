@@ -1,11 +1,17 @@
 """
-Test case name: test_file_content
+Test case name: test_head_file_content
 Test case description:
-    Test the content of the file after execute the command "gitlet init"
+    Test the content of the file ".gitlet/HEAD"
 
     Expected result: After execute the command "gitlet init" 
         - the file ".gitlet/HEAD" will be created. 
             And the content of the file is "ref: refs/heads/master"
+
+Test case name: test_description_file_content
+Test case description:
+    Test the content of the file ".gitlet/description"
+
+    Expected result: After execute the command "gitlet init" 
         - the file ".gitlet/description" will be created.
             And the content of the file is "Unnamed repository; edit this file 'description' to name the repository."
 """
