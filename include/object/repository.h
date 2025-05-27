@@ -41,7 +41,7 @@ struct repository{
 extern void repository_object_init(struct repository * this, const char * path, bool check);
 
 /**
- * @brief: Create a new repository
+ * @brief: Create a new repository, if the path does not exist, create a new repository in the path
  * @param path: The path to the repository
  */
 extern void repository_create(const char * path);

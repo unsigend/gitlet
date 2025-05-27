@@ -24,6 +24,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 #include <sys/stat.h>
 
 #include <command/init.h>
@@ -31,17 +32,48 @@
 #include <util/error.h>
 #include <util/files.h>
 #include <object/repository.h>
+#include <util/str.h>
 
 #include <argparse.h>
 
 void command_init(int argc, char *argv[]) {
-    (void)argc;
-    (void)argv;
-
     char current_path[PATH_MAX];
     if (!getcwd(current_path, PATH_MAX)){
         gitlet_panic("fatal: failed to get current working directory");
     }
 
-    repository_create(current_path);
+    if (argc == 0){
+        repository_create(current_path);
+    }else{
+        struct argparse_description description = {
+            "Initialize a new gitlet repository",
+            NULL,
+            "gitlet init [--help | -h] [path]",
+            NULL
+        };
+        struct argparse_option options[] = {
+            OPTION_GROUP("Options"),
+            OPTION_HELP(),
+            OPTION_GROUP_END(),
+            OPTION_END()
+        };
+        struct argparse argparse;
+        argparse_init(&argparse, options, &description);
+
+        const char * dir_path = argv[argc - 1];
+        if (str_start_with(dir_path, "-") || str_start_with(dir_path, "--")){
+            // the last argument is a option init at current directory
+            argparse_parse(&argparse, argc, argv);
+            repository_create(current_path);
+        }else{
+            // the last argument is a path to the repository
+            argc--;
+            if (argc != 0){
+                argparse_parse(&argparse, argc, argv);
+            }
+            strcat(current_path, "/");
+            strcat(current_path, dir_path);
+            repository_create(current_path);
+        }
+    }
 }

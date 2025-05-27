@@ -54,7 +54,7 @@ int main(int argc, char *argv[]) {
         }
         // if the second argument is a sub-command
         else{
-            if (!gitlet_run_command(argv[1], argc - 1, argv + 1)){
+            if (!gitlet_run_command(argv[1], argc - 2, argv + 2)){
                 gitlet_panic("\'%s\' is not a gitlet command. See \'gitlet --help\'", argv[1]);
             }
         }
