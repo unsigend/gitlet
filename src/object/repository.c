@@ -30,6 +30,8 @@
 #include <object/repository.h>
 #include <util/error.h>
 #include <util/files.h>
+#include <global/config.h>
+
 
 static char gitlet_repo_path[PATH_MAX];
 

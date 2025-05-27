@@ -64,7 +64,7 @@ CC_INCLUDE_PATHS       	+=  -isystem $(EXTERNAL_INCLUDE_PATH)
 
 # Variable for GCC compiler warnings
 CC_WARNINGS            	:= 	-Wall -Wextra -Werror
-CC_WARNINGS             +=  -Wextra -Wno-unused-parameter
+CC_WARNINGS             +=  -Wextra -Wno-unused-parameter 
 CC_WARNINGS             +=  -Wno-unused-function
 
 # Variable for GCC debugger flag

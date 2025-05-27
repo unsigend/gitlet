@@ -33,4 +33,9 @@
 
 #define GITLET_DOCUMENTATION_URL    "https://github.com/unsigend/gitlet"
 
+// Macors for limits
+#ifndef PATH_MAX
+#define PATH_MAX 1024
+#endif
+
 #endif // GITLET_GLOBAL_CONFIG_H
