@@ -121,9 +121,12 @@ void repository_create(const char * path){
     // create .gitlet/HEAD file
     strcpy(path_buffer, this.gitlet_repo_path);
     strcat(path_buffer, "/HEAD");
-    if (!create_file(path_buffer)){
+    FILE * file_head = fopen(path_buffer, "w");
+    if (file_head == NULL){
         gitlet_panic("fatal: unable to create file %s", path_buffer);
     }
+    fprintf(file_head, "ref: refs/heads/master\n");
+    fclose(file_head);
 
     // create .gitlet/config file
     strcpy(path_buffer, this.gitlet_repo_path);
@@ -135,7 +138,10 @@ void repository_create(const char * path){
     // create .gitlet/description file
     strcpy(path_buffer, this.gitlet_repo_path);
     strcat(path_buffer, "/description");
-    if (!create_file(path_buffer)){
+    FILE * file_description = fopen(path_buffer, "w");
+    if (file_description == NULL){
         gitlet_panic("fatal: unable to create file %s", path_buffer);
     }
+    fprintf(file_description, "Unnamed repository; edit this file 'description' to name the repository.\n");
+    fclose(file_description);
 }
