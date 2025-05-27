@@ -35,7 +35,7 @@ def test_dir_and_file_create() -> None:
     # run the command "gitlet init" with subprocess
     result = subprocess.run([PROGRAM_NAME, "init"], capture_output=True, text=True, check=False)
     assert result.returncode == 0
-    assert result.stdout == f"Initialized empty gitlet repository in {os.getcwd()}/.gitlet\n"
+    assert result.stdout == f"Initialized empty Gitlet repository in {os.getcwd()}/.gitlet/\n"
     # Make sure the .gitlet directory is created after the command "gitlet init"
     assert os.path.exists(".gitlet")
     # check the .gitlet directory is a directory

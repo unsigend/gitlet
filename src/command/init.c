@@ -36,6 +36,9 @@
 
 #include <argparse.h>
 
+/**
+ * @usage: gitlet init [--help | -h] [path]
+ */
 void command_init(int argc, char *argv[]) {
     char current_path[PATH_MAX];
     if (!getcwd(current_path, PATH_MAX)){
@@ -62,7 +65,7 @@ void command_init(int argc, char *argv[]) {
 
         const char * dir_path = argv[argc - 1];
         if (str_start_with(dir_path, "-") || str_start_with(dir_path, "--")){
-            // the last argument is a option init at current directory
+            // the last argument is a option, init at current directory
             argparse_parse(&argparse, argc, argv);
             repository_create(current_path);
         }else{
@@ -71,9 +74,17 @@ void command_init(int argc, char *argv[]) {
             if (argc != 0){
                 argparse_parse(&argparse, argc, argv);
             }
-            strcat(current_path, "/");
-            strcat(current_path, dir_path);
-            repository_create(current_path);
+            // path check
+            if (str_start_with(dir_path, ".") || str_start_with(dir_path, "..")
+            || str_start_with(dir_path, "/")){
+                // if the path is a relative path or absolute path, create the repository in the path
+                repository_create(dir_path);
+            }else{
+                // if the path is a directory, create the repository in the the current directory
+                strcat(current_path, "/");
+                strcat(current_path, dir_path);
+                repository_create(current_path);
+            }
         }
     }
 }

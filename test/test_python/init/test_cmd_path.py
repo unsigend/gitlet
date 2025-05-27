@@ -21,8 +21,11 @@ def test_cmd_path() -> None:
     """
 
     # before run the command "gitlet init"
-    assert not os.path.exists(TEST_DIR)
-    assert not os.path.exists(f"{TEST_DIR}/.gitlet")
+    # check the .gitlet directory is not exist
+    if os.path.exists(TEST_DIR):
+        os.system(f"rm -rf {TEST_DIR}")
+        assert not os.path.exists(TEST_DIR)
+        assert not os.path.exists(f"{TEST_DIR}/.gitlet")
 
     # run the command "gitlet init" with subprocess
     result = subprocess.run([PROGRAM_NAME, "init", TEST_DIR],

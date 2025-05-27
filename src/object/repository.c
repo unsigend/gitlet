@@ -29,6 +29,7 @@
 
 #include <object/repository.h>
 #include <util/error.h>
+#include <util/str.h>
 #include <util/files.h>
 #include <global/config.h>
 
@@ -39,7 +40,10 @@ void repository_object_init(struct repository * this, const char * path, bool fo
     this->working_tree_path = path;
     memset(gitlet_repo_path, 0, PATH_MAX);
     strcpy(gitlet_repo_path, this->working_tree_path);
-    strcat(gitlet_repo_path, "/.gitlet");
+    if (!str_end_with(gitlet_repo_path, "/")){
+        strcat(gitlet_repo_path, "/");
+    }
+    strcat(gitlet_repo_path, ".gitlet");
     this->gitlet_repo_path = gitlet_repo_path;
 
     // error check
@@ -69,7 +73,11 @@ void repository_create(const char * path){
 
     // already a repository
     if (exists(this.gitlet_repo_path)){
-        fprintf(stdout, "Reinitialized existing gitlet repository in %s\n", this.gitlet_repo_path);
+        fprintf(stdout, "Reinitialized existing Gitlet repository in %s", this.gitlet_repo_path);
+        if (!str_end_with(this.gitlet_repo_path, "/")){
+            fprintf(stdout, "/");
+        }
+        fprintf(stdout, "\n");
         return;
     }
 
@@ -84,7 +92,11 @@ void repository_create(const char * path){
     if (!create_directory(this.gitlet_repo_path)){
         gitlet_panic("fatal: unable to mkdir %s", this.gitlet_repo_path);
     }else{
-        fprintf(stdout, "Initialized empty gitlet repository in %s\n", this.gitlet_repo_path);
+        fprintf(stdout, "Initialized empty Gitlet repository in %s", this.gitlet_repo_path);
+        if (!str_end_with(this.gitlet_repo_path, "/")){
+            fprintf(stdout, "/");
+        }
+        fprintf(stdout, "\n");
     }
 
     char path_buffer[PATH_MAX];
