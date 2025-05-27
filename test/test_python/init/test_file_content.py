@@ -35,6 +35,10 @@ def test_head_file_content() -> None:
     with open(".gitlet/HEAD", "r", encoding="utf-8") as file:
         content = file.read()
         assert content == "ref: refs/heads/master\n"
+
+    # remove the .gitlet directory
+    os.system("rm -rf .gitlet")
+    assert not os.path.exists(".gitlet")
         
 def test_description_file_content() -> None:
     """
@@ -56,6 +60,9 @@ def test_description_file_content() -> None:
         content = file.read()
         assert content == "Unnamed repository; edit this file 'description' to name the repository.\n"
 
+    # remove the .gitlet directory
+    os.system("rm -rf .gitlet")
+    assert not os.path.exists(".gitlet")
 
 if __name__ == "__main__":
     pytest.main()

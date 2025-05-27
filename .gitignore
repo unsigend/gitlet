@@ -27,3 +27,7 @@ lib/
 
 # Ignore gitlet executable
 gitlet
+
+# Ignore all the .gitlet directory
+.gitlet/
+test/test_python/**/.gitlet/
