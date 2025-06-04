@@ -36,6 +36,14 @@
 // gitlet global config
 #include <global/config.h>
 
+/**
+ * @brief: The main function of the gitlet program
+ *        Just as a sub-command dispatcher, it will check and map the sub-command to the corresponding 
+ *        function.
+ * @note: The argv and argv will dispatch to the function, and only the arguments after the sub-command
+ *        will be passed to the function (eg. gitlet add -a file1 file2  argv = [-a, file1, file2] argc = 3)
+ */
+
 int main(int argc, char *argv[]) {
 
     if (argc == 1){
