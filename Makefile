@@ -55,8 +55,15 @@ LD                      :=  $(CC)
 BASH                    := 	bash
 PYTHON               	:= 	python3
 
+# Variable for Host OS
+HOST_OS                 := 	$(shell uname -s)
+
 # Variable for GCC compiler flags
 CC_FLAGS                :=  -std=c11
+
+ifeq ($(HOST_OS), Linux)
+	CC_FLAGS                +=  -fPIC
+endif
 
 # Variable for GCC include paths
 CC_INCLUDE_PATHS        :=  -I $(INCLUDE_PATH)
@@ -86,8 +93,6 @@ CC_DEPENDENCY           +=  -MMD -MP -MF
 
 CC_FLAGS                +=  $(CC_WARNINGS) $(CC_DEBUG) $(CC_OPTIMIZE) $(CC_INCLUDE_PATHS)
 
-# Variable for Host OS
-HOST_OS                 := 	$(shell uname -s)
 # Variables for program and library names
 PROGRAM_NAME            := 	gitlet
 LIBRARY_NAME            := 	$(PROGRAM_NAME)
