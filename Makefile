@@ -92,16 +92,11 @@ HOST_OS                 := 	$(shell uname -s)
 PROGRAM_NAME            := 	gitlet
 LIBRARY_NAME            := 	$(PROGRAM_NAME)
 
-ifeq ($(LIBRARY_BUILD_METHOD), STATIC)
-LIBRARY_POSTFIX         := 	.a
-else
+STATIC_LIBRARY_POSTFIX  := 	.a
 ifeq ($(HOST_OS), Darwin)
-LIBRARY_POSTFIX         := 	.dylib
-else ifeq ($(HOST_OS), Windows)
-LIBRARY_POSTFIX         := 	.dll
+SHARED_LIBRARY_POSTFIX  := 	.dylib
 else
-LIBRARY_POSTFIX         := 	.so
-endif
+SHARED_LIBRARY_POSTFIX  := 	.so
 endif
 
 SRCS                    := 	$(shell find $(SRC_PATH) -type f -name "*.c")
@@ -118,8 +113,8 @@ export CC_DEBUG
 export CC_OPTIMIZE
 export CC_DEPENDENCY
 export LIBRARY_NAME
-export LIBRARY_POSTFIX
-export LIBRARY_BUILD_METHOD
+export SHARED_LIBRARY_POSTFIX
+export STATIC_LIBRARY_POSTFIX
 
 .DEFAULT_GOAL := help
 .PHONY: all clean help lib test mkdir-lib dep add-env
@@ -182,14 +177,11 @@ test-py: lib all
 LIB_OBJS                :=  $(filter-out $(OBJ_PATH)/main.o, $(OBJS))
 # Build the library
 lib: mkdir-lib $(LIB_OBJS) $(EXTERNAL_OBJS)
-ifeq ($(LIBRARY_BUILD_METHOD), STATIC)
-	@$(AR) rcs $(LIB_PATH)/$(LIBRARY_NAME)$(LIBRARY_POSTFIX) $(LIB_OBJS) $(EXTERNAL_OBJS)
-	@echo " + AR\t$(LIBRARY_NAME)$(LIBRARY_POSTFIX)"
-else
-	@$(CC) $(CC_FLAGS) -shared $(LIB_OBJS) $(EXTERNAL_OBJS) -o $(LIB_PATH)/$(LIBRARY_NAME)$(LIBRARY_POSTFIX)
-	@echo " + LD\t$(LIBRARY_NAME)$(LIBRARY_POSTFIX)"
-endif
-	@echo "Build $(LIBRARY_NAME)$(LIBRARY_POSTFIX) library in $(LIB_PATH)"
+	@$(AR) rcs $(LIB_PATH)/$(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX) $(LIB_OBJS) $(EXTERNAL_OBJS)
+	@echo " + AR\t$(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX)"
+	@$(CC) $(CC_FLAGS) -shared $(LIB_OBJS) $(EXTERNAL_OBJS) -o $(LIB_PATH)/$(LIBRARY_NAME)$(SHARED_LIBRARY_POSTFIX)
+	@echo " + LD\t$(LIBRARY_NAME)$(SHARED_LIBRARY_POSTFIX)"
+	@echo "Build $(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX) and $(LIBRARY_NAME)$(SHARED_LIBRARY_POSTFIX) library in $(LIB_PATH)"
 
 # Make the lib directory
 mkdir-lib:

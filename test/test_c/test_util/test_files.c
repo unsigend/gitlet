@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 UTEST_TEST_CASE(exists){
-    // the current directory will be the root directory of the project
+    // the current directory will be the test directory of the project
     EXPECT_TRUE(exists("."));
     EXPECT_FALSE(exists("nonexistent"));
 
@@ -19,35 +19,35 @@ UTEST_TEST_CASE(exists){
     EXPECT_TRUE(exists(current_dir));
     EXPECT_TRUE(exists(current_dir_const));
 
-    sprintf(current_dir + current_dir_len, "/test/test_c");
+    sprintf(current_dir + current_dir_len, "/test_c");
     EXPECT_TRUE(exists(current_dir));
     strcpy(current_dir, current_dir_const);
 
-    sprintf(current_dir + current_dir_len, "/test/test_c/test_util");
+    sprintf(current_dir + current_dir_len, "/test_c/test_util");
     EXPECT_TRUE(exists(current_dir));
     strcpy(current_dir, current_dir_const);
 
-    sprintf(current_dir + current_dir_len, "/test/test_c/test_util/test_files.c");
+    sprintf(current_dir + current_dir_len, "/test_c/test_util/test_files.c");
     EXPECT_TRUE(exists(current_dir));
     strcpy(current_dir, current_dir_const);
 
-    sprintf(current_dir + current_dir_len, "/test/test_python");
+    sprintf(current_dir + current_dir_len, "/test_python");
     EXPECT_TRUE(exists(current_dir));
     strcpy(current_dir, current_dir_const);
 
-    sprintf(current_dir + current_dir_len, "/test/utest");
+    sprintf(current_dir + current_dir_len, "/utest");
     EXPECT_TRUE(exists(current_dir));
     strcpy(current_dir, current_dir_const);
 
-    sprintf(current_dir + current_dir_len, "/test/utest/include");
+    sprintf(current_dir + current_dir_len, "/utest/include");
     EXPECT_TRUE(exists(current_dir));
     strcpy(current_dir, current_dir_const);
 
-    sprintf(current_dir + current_dir_len, "/test/utest/src");
+    sprintf(current_dir + current_dir_len, "/utest/src");
     EXPECT_TRUE(exists(current_dir));
     strcpy(current_dir, current_dir_const);
 
-    sprintf(current_dir + current_dir_len, "/test/Makefile");
+    sprintf(current_dir + current_dir_len, "/Makefile");
     EXPECT_TRUE(exists(current_dir));
     memset(current_dir, 0, sizeof(current_dir));
 }
