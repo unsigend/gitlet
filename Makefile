@@ -69,6 +69,15 @@ endif
 CC_INCLUDE_PATHS        :=  -I $(INCLUDE_PATH)
 CC_INCLUDE_PATHS       	+=  -isystem $(EXTERNAL_INCLUDE_PATH)
 
+# Include the openssl header file
+ifeq ($(HOST_OS), Darwin)
+CC_INCLUDE_PATHS        +=  -I /opt/homebrew/opt/openssl/include
+endif
+
+ifeq ($(HOST_OS), Linux)
+CC_INCLUDE_PATHS        +=  -I /usr/include/openssl
+endif
+
 # Variable for GCC compiler warnings
 CC_WARNINGS            	:= 	-Wall -Wextra -Werror
 CC_WARNINGS             +=  -Wextra -Wno-unused-parameter 
@@ -92,6 +101,22 @@ CC_DEPENDENCY           :=
 CC_DEPENDENCY           +=  -MMD -MP -MF
 
 CC_FLAGS                +=  $(CC_WARNINGS) $(CC_DEBUG) $(CC_OPTIMIZE) $(CC_INCLUDE_PATHS)
+
+# Variable for Linker flags
+LD_FLAGS                :=
+
+EXTERNAL_LIBS           :=  -lssl -lcrypto
+
+EXTERNAL_LIB_PATH       :=
+ifeq ($(HOST_OS), Darwin)
+EXTERNAL_LIB_PATH       +=  -L /opt/homebrew/opt/openssl/lib
+endif
+ifeq ($(HOST_OS), Linux)
+EXTERNAL_LIB_PATH       +=  -L /usr/lib/openssl
+endif
+
+LD_FLAGS                +=  $(EXTERNAL_LIBS)
+LD_FLAGS                +=  $(EXTERNAL_LIB_PATH)
 
 # Variables for program and library names
 PROGRAM_NAME            := 	gitlet
@@ -140,7 +165,7 @@ ALL_DEPS                := 	$(shell if [ -d $(DEP_PATH) ]; then find $(DEP_PATH)
 
 # Build the program
 all: $(OBJS) $(EXTERNAL_OBJS)
-	@$(CC) $(CC_FLAGS) $(OBJS) $(EXTERNAL_OBJS) -o $(PROGRAM_NAME)
+	@$(CC) $(CC_FLAGS) $(LD_FLAGS) $(OBJS) $(EXTERNAL_OBJS) -o $(PROGRAM_NAME)
 	@echo " + LD\t$(PROGRAM_NAME)"
 	@echo "Build program $(PROGRAM_NAME) successfully in $(CURDIR)"
 
