@@ -29,5 +29,5 @@ DEBUG 					:= 		0
 VERBOSE 				:= 		0
 
 # Config for library build method
-LIBRARY_BUILD_METHOD 	:= 	STATIC
-# LIBRARY_BUILD_METHOD    :=  SHARED
+# LIBRARY_BUILD_METHOD 	:= 	STATIC
+LIBRARY_BUILD_METHOD    :=  SHARED

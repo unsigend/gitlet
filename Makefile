@@ -119,7 +119,7 @@ export CC_OPTIMIZE
 export CC_DEPENDENCY
 export LIBRARY_NAME
 export LIBRARY_POSTFIX
-
+export LIBRARY_BUILD_METHOD
 
 .DEFAULT_GOAL := help
 .PHONY: all clean help lib test mkdir-lib dep add-env
@@ -181,12 +181,12 @@ test-py: lib all
 # filter out the main.o file
 LIB_OBJS                :=  $(filter-out $(OBJ_PATH)/main.o, $(OBJS))
 # Build the library
-lib: mkdir-lib $(LIB_OBJS)
+lib: mkdir-lib $(LIB_OBJS) $(EXTERNAL_OBJS)
 ifeq ($(LIBRARY_BUILD_METHOD), STATIC)
-	@$(AR) rcs $(LIB_PATH)/$(LIBRARY_NAME)$(LIBRARY_POSTFIX) $(LIB_OBJS)
+	@$(AR) rcs $(LIB_PATH)/$(LIBRARY_NAME)$(LIBRARY_POSTFIX) $(LIB_OBJS) $(EXTERNAL_OBJS)
 	@echo " + AR\t$(LIBRARY_NAME)$(LIBRARY_POSTFIX)"
 else
-	@$(CC) $(CC_FLAGS) $(LIB_OBJS) -shared -o $(LIB_PATH)/$(LIBRARY_NAME)$(LIBRARY_POSTFIX)
+	@$(CC) $(CC_FLAGS) -shared $(LIB_OBJS) $(EXTERNAL_OBJS) -o $(LIB_PATH)/$(LIBRARY_NAME)$(LIBRARY_POSTFIX)
 	@echo " + LD\t$(LIBRARY_NAME)$(LIBRARY_POSTFIX)"
 endif
 	@echo "Build $(LIBRARY_NAME)$(LIBRARY_POSTFIX) library in $(LIB_PATH)"

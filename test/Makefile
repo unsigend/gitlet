@@ -59,6 +59,16 @@ UTEST_SRC_PATH        	:=  $(UTEST_PATH)/src
 CC_INCLUDES             :=  -I$(INCLUDE_PATH) -I$(UTEST_INCLUDE_PATH)
 CC_FLAGS                :=  -std=c11 $(CC_WARNINGS) $(CC_DEBUG) $(CC_OPTIMIZE) $(CC_INCLUDES)
 
+ifeq ($(HOST_OS), Darwin)
+LD_FLAGS                :=  -L$(LIBRARY_PATH) -l$(LIBRARY_NAME)
+else
+LD_FLAGS                :=  $(LIBRARY_PATH)/$(LIBRARY_NAME)$(LIBRARY_POSTFIX)
+endif
+
+ifeq ($(LIBRARY_BUILD_METHOD), SHARED)
+LD_FLAGS                +=  -Wl,-rpath,$(LIBRARY_PATH)
+endif
+
 SRCS_C                 :=  $(shell find $(CTEST_PATH) -name "*.c")
 OBJS_C                 :=  $(patsubst $(CTEST_PATH)/%.c, $(BUILD_PATH)/%.o, $(SRCS_C))
 
@@ -74,9 +84,13 @@ $(BUILD_PATH)/%.o: $(CTEST_PATH)/%.c
 
 # Test the C test cases
 test-c: $(OBJS_C) $(BUILD_PATH)/utest.o
-	@$(CC) $(CC_FLAGS) $^ $(LIBRARY_PATH)/$(LIBRARY_NAME)$(LIBRARY_POSTFIX) -o $(BUILD_PATH)/test_c
+	@$(CC) $^ $(CC_FLAGS) $(LD_FLAGS) -o $(BUILD_PATH)/test_c
+ifeq ($(LIBRARY_BUILD_METHOD), SHARED)
+	@echo "Run ./test/build/test_c to see the test result"
+else
 	@clear
 	@$(BUILD_PATH)/test_c
+endif
 
 # Test the Python test cases
 test-py: py-init
