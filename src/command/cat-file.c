@@ -22,8 +22,28 @@
  * SOFTWARE.
  */
 
+#include <unistd.h>
+#include <string.h>
+#include <sys/stat.h>
+
 #include <command/cat-file.h>
+#include <object/object.h>
+#include <object/repository.h>
+#include <util/error.h>
 
 void command_cat_file(int argc, char *argv[]) {
-    
+    struct repository repo;
+    char buffer[PATH_MAX];
+    memset(buffer, 0, PATH_MAX);
+
+    if (getcwd(buffer, PATH_MAX) == NULL){
+        gitlet_panic("Failed to get the current working directory");
+    }
+
+    repository_object_init(&repo, buffer, true);
+    if (argc < 1){
+        gitlet_panic("No object name provided");
+    }
+    struct object _object;
+    object_init(&_object, &repo, argv[0]);
 }

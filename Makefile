@@ -80,7 +80,7 @@ endif
 
 # Variable for GCC compiler warnings
 CC_WARNINGS            	:= 	-Wall -Wextra -Werror
-CC_WARNINGS             +=  -Wextra -Wno-unused-parameter 
+CC_WARNINGS             +=  -Wextra -Wno-unused-parameter
 CC_WARNINGS             +=  -Wno-unused-function
 
 # Variable for GCC debugger flag
@@ -105,7 +105,7 @@ CC_FLAGS                +=  $(CC_WARNINGS) $(CC_DEBUG) $(CC_OPTIMIZE) $(CC_INCLU
 # Variable for Linker flags
 LD_FLAGS                :=
 
-EXTERNAL_LIBS           :=  -lssl -lcrypto
+EXTERNAL_LIBS           :=  -lssl -lcrypto -lz
 
 EXTERNAL_LIB_PATH       :=
 ifeq ($(HOST_OS), Darwin)
@@ -209,7 +209,7 @@ LIB_OBJS                :=  $(filter-out $(OBJ_PATH)/main.o, $(OBJS))
 lib: mkdir-lib $(LIB_OBJS) $(EXTERNAL_OBJS)
 	@$(AR) rcs $(LIB_PATH)/$(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX) $(LIB_OBJS) $(EXTERNAL_OBJS)
 	@echo " + AR\t$(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX)"
-	@$(CC) $(CC_FLAGS) -shared $(LIB_OBJS) $(EXTERNAL_OBJS) -o $(LIB_PATH)/$(LIBRARY_NAME)$(SHARED_LIBRARY_POSTFIX)
+	@$(CC) $(CC_FLAGS) $(LD_FLAGS) -shared $(LIB_OBJS) $(EXTERNAL_OBJS) -o $(LIB_PATH)/$(LIBRARY_NAME)$(SHARED_LIBRARY_POSTFIX)
 	@echo " + LD\t$(LIBRARY_NAME)$(SHARED_LIBRARY_POSTFIX)"
 	@echo "Build $(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX) and $(LIBRARY_NAME)$(SHARED_LIBRARY_POSTFIX) library in $(LIB_PATH)"
 
