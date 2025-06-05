@@ -36,7 +36,7 @@
 
 static char gitlet_repo_path[PATH_MAX];
 
-void repository_object_init(struct repository * this, const char * path, bool force){
+void repository_object_init(struct repository * this, const char * path, bool check){
     this->working_tree_path = path;
     memset(gitlet_repo_path, 0, PATH_MAX);
     strcpy(gitlet_repo_path, this->working_tree_path);
@@ -47,8 +47,8 @@ void repository_object_init(struct repository * this, const char * path, bool fo
     this->gitlet_repo_path = gitlet_repo_path;
 
     // error check
-    if (force){
-        // only the force option is disable then do the error check
+    if (check){
+        // when the check option is enable, do the error check
         if (!exists(this->gitlet_repo_path)){
             gitlet_panic("Not a gitlet repository");
         }

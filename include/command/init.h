@@ -25,6 +25,11 @@
 #ifndef GITLET_COMMAND_INIT_H
 #define GITLET_COMMAND_INIT_H
 
+/**
+ * @brief: Initialize a new gitlet repository, 
+ *         and create the directory structure of the repository.
+ * @usage: gitlet init [--help | -h] [path]
+ */
 extern void command_init(int argc, char *argv[]);
 
 #endif // GITLET_COMMAND_INIT_H 

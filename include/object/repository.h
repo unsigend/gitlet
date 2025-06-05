@@ -33,7 +33,7 @@ struct repository{
 };
 
 /**
- * @brief: Initialize the repository object
+ * @brief: Initialize the repository object, and do the error check if the check option is enable
  * @param this: The repository object to initialize
  * @param path: The path to the repository
  * @param check: Whether to enable the error check
@@ -41,7 +41,8 @@ struct repository{
 extern void repository_object_init(struct repository * this, const char * path, bool check);
 
 /**
- * @brief: Create a new repository, if the path does not exist, create a new repository in the path
+ * @brief: Create a new repository, if the path does not exist, create a new repository in the path.
+ *         And create the directory structure of the repository.
  * @param path: The path to the repository
  */
 extern void repository_create(const char * path);
