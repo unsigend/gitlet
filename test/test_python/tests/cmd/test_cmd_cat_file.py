@@ -24,9 +24,20 @@ def test_command_cat_file() -> None:
     # copy the objects directory to the gitlet directory
     os.system(f"cp -r {_global.GIT_DIR}/objects/ {_global.GITLET_DIR}/objects/")
 
-    result_gitlet = subprocess.run([_global.GITLET, "cat-file", SHA1],
+    result_gitlet = subprocess.run([_global.GITLET, "cat-file", "-h"],
                                  cwd=_global.TEMP_DIR, capture_output=True)
     assert result_gitlet.returncode == 0
+
+    # Check the -t flag
+    result_gitlet = subprocess.run([_global.GITLET, "cat-file", "-t", SHA1],
+                                 cwd=_global.TEMP_DIR, capture_output=False)
+    
+    result_git = subprocess.run([_global.GIT, "cat-file", "-t", SHA1],
+                                 cwd=_global.TEMP_DIR, capture_output=True)
+    
+    assert result_git.returncode == result_gitlet.returncode
+    assert result_git.stdout.decode("utf-8") == result_gitlet.stdout.decode("utf-8")
+
 
 
     _global.global_teardown()

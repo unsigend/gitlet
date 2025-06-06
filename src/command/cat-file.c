@@ -73,7 +73,22 @@ void command_cat_file(int argc, char *argv[]) {
     if (argc == 0){
         argparse_parse(&argparse, 1, (char *[]){"-h"});
     }else{
-        argparse_parse(&argparse, argc, argv);
+        const char * sha1 = argv[argc - 1];
+        
+        if (!isxdigit(sha1[0]) || strlen(sha1) != 40){
+            // Make sure the last argument is not  help flag
+            if (strcmp(sha1, "-h") == 0 || strcmp(sha1, "--help") == 0){
+                argparse_parse(&argparse, 1, (char *[]){"-h"});
+            }else{
+                gitlet_panic("Not a valid object name: %s", sha1);
+            }
+        }
+        if (argc < 2){
+            gitlet_panic("only two arguments allowed in <type> <object> mode, not 1");
+        }
+        
+        argparse_parse(&argparse, argc - 1, argv);
+
         if (p_flag && (t_flag || s_flag || e_flag)){
             gitlet_panic("options  \'-p\' cannot be used with \'-t\', \'-s\', or \'-e\'");
         }
@@ -91,11 +106,6 @@ void command_cat_file(int argc, char *argv[]) {
         repository_object_init(&repo, current_dir, true);
 
         struct object obj;
-        const char * sha1 = argv[argc - 1];
-        
-        if (!isxdigit(sha1[0]) || strlen(sha1) != 40){
-            gitlet_panic("Not a valid object name: %s", sha1);
-        }
         object_init(&obj, &repo, sha1);
 
         if (t_flag){
@@ -123,5 +133,4 @@ void command_cat_file(int argc, char *argv[]) {
             printf("%llu\n", obj.file_size);
         }
     }
-    
 }

@@ -96,10 +96,15 @@ void object_init(struct object * this, struct repository * repo, const char * sh
         }
     }
 
+    /// TODO: Check the buffer bug here
     // get the type of the object
     char type_buffer[OBJECT_TYPE_SIZE] = {0};
     strncpy(type_buffer, (char *)decompressed_file_header, OBJECT_TYPE_SIZE);
-    *((char *)memchr(type_buffer, ' ', OBJECT_TYPE_SIZE)) = '\0';
+    char * space_ptr = (char *)memchr(type_buffer, ' ', OBJECT_TYPE_SIZE);
+    if (space_ptr == NULL){
+        gitlet_panic("Invalid object type: %s", type_buffer);
+    }
+    *space_ptr = '\0';
     
     if (str_equals(type_buffer, "blob")){
         this->type = OBJECT_TYPE_BLOB;

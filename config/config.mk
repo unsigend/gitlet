@@ -23,7 +23,7 @@
 # Configurations for build gitlet
 
 # Config for debug
-DEBUG 					:= 		0
+DEBUG 					:= 		1
 
 # Config for verbose
 VERBOSE 				:= 		0

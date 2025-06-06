@@ -18,12 +18,12 @@ def global_setup():
     assert os.path.exists(TEMP_DIR)
 
     if not os.path.exists(GIT_DIR):
-        result_git = subprocess.run([GIT, "init", TEMP_DIR], cwd=WORKING_DIR)
+        result_git = subprocess.run([GIT, "init", TEMP_DIR], cwd=WORKING_DIR, capture_output=True)
         assert result_git.returncode == 0
     assert os.path.exists(GIT_DIR)
 
     if not os.path.exists(GITLET_DIR):
-        result_gitlet = subprocess.run([GITLET, "init", TEMP_DIR], cwd=WORKING_DIR)
+        result_gitlet = subprocess.run([GITLET, "init", TEMP_DIR], cwd=WORKING_DIR, capture_output=True)
         assert result_gitlet.returncode == 0
     assert os.path.exists(GITLET_DIR)
 
