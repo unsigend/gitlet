@@ -31,8 +31,6 @@
  */
 #include <stdint.h>
 
-#include <object/repository.h>
-
 enum object_type{
     OBJECT_TYPE_BLOB,
     OBJECT_TYPE_TREE,
@@ -47,6 +45,7 @@ struct object{
     unsigned char * content;
 };
 
-extern void object_init(struct object * this, struct repository * repo, const char * sha1);
+extern void object_read(struct object * obj, const char * sha1);
+extern void object_write(struct object * obj);
 
 #endif

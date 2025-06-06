@@ -26,6 +26,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include <stdbool.h>
+#include <stdlib.h>
 #include <ctype.h>
 #include <stdio.h>
 
@@ -36,6 +37,7 @@
 #include <object/repository.h>
 #include <util/error.h>
 #include <util/str.h>
+#include <util/files.h>
 
 void command_cat_file(int argc, char *argv[]) {
     char current_dir[PATH_MAX];
@@ -86,7 +88,7 @@ void command_cat_file(int argc, char *argv[]) {
         if (argc < 2){
             gitlet_panic("only two arguments allowed in <type> <object> mode, not 1");
         }
-        
+
         argparse_parse(&argparse, argc - 1, argv);
 
         if (p_flag && (t_flag || s_flag || e_flag)){
@@ -105,8 +107,22 @@ void command_cat_file(int argc, char *argv[]) {
         struct repository repo;
         repository_object_init(&repo, current_dir, true);
 
+        if (e_flag){
+            strcat(current_dir, "/.gitlet/objects/");
+            strncpy(current_dir + strlen(current_dir), sha1, 2);
+            strcat(current_dir, "/");
+            strncpy(current_dir + strlen(current_dir), sha1 + 2, 38);
+
+            if (exists(current_dir)){
+                return;
+            }else{
+                gitlet_panic("fatal: Not a valid object name %s", sha1);
+            }
+        }
+
+        // Read the object
         struct object obj;
-        object_init(&obj, &repo, sha1);
+        object_read(&obj, sha1);
 
         if (t_flag){
             switch (obj.type){
@@ -127,10 +143,12 @@ void command_cat_file(int argc, char *argv[]) {
             }
         }
         else if (p_flag){
-            printf("%s\n", obj.content);
+            printf("%s", obj.content);
         }
         else if (s_flag){
             printf("%llu\n", obj.file_size);
         }
+        
+        free(obj.content);
     }
 }
