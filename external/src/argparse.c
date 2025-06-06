@@ -55,7 +55,7 @@
 #define ASCII_COLOR_RESET   "\033[0m"
 
 // Buffer Macros
-#define CHAR_BUFFER_ALIGN       25
+#define CHAR_BUFFER_ALIGN       12
 #define CHAR_BUFFER_SIZE        64
 
 // Option Macros
@@ -131,11 +131,11 @@ static void argparse_show_all(const struct argparse *this){
 
     // show the program name
     if (this->_description->_program_name)
-        fprintf(stdout, "USAGE: %s ", this->_description->_program_name);
+        fprintf(stdout, "%s ", this->_description->_program_name);
     
     // show the usage
     if (this->_description->_usage)
-        fprintf(stdout, "%s", this->_description->_usage);
+        fprintf(stdout, "USAGE: %s", this->_description->_usage);
 
     fprintf(stdout, "\n\n");
 
