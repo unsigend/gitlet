@@ -85,7 +85,7 @@ test-c: $(OBJS_C) $(BUILD_PATH)/utest.o
 
 # Test the Python test cases
 test-py: py-init
-	@$(PYTEST_PATH)/.venv/bin/pytest $(PYTEST_PATH)
+	@$(PYTEST_PATH)/.venv/bin/pytest $(PYTEST_PATH)/tests
 
 # Test all the cases for gitlet library
 test: test-c test-py
@@ -97,7 +97,7 @@ clean:
 # Clean all build files and cache files
 clean-all:
 	@$(MAKE) clean
-	@rm -rf $(PYTEST_PATH)/**/__pycache__
+	@find $(PYTEST_PATH) -name "__pycache__" -type d -exec rm -rf {} +
 	@rm -rf $(PYTEST_PATH)/.venv
 	@rm -rf .pytest_cache
 
