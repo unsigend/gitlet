@@ -145,6 +145,8 @@ export CC_DEPENDENCY
 export LIBRARY_NAME
 export SHARED_LIBRARY_POSTFIX
 export STATIC_LIBRARY_POSTFIX
+export EXTERNAL_LIBS
+export EXTERNAL_LIB_PATH
 
 .DEFAULT_GOAL := help
 .PHONY: all clean help lib test mkdir-lib dep add-env
@@ -207,11 +209,11 @@ test-py: lib all
 LIB_OBJS                :=  $(filter-out $(OBJ_PATH)/main.o, $(OBJS))
 # Build the library
 lib: mkdir-lib $(LIB_OBJS) $(EXTERNAL_OBJS)
-	@$(AR) rcs $(LIB_PATH)/$(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX) $(LIB_OBJS) $(EXTERNAL_OBJS)
-	@echo " + AR\t$(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX)"
-	@$(CC) $(CC_FLAGS) $(LD_FLAGS) -shared $(LIB_OBJS) $(EXTERNAL_OBJS) -o $(LIB_PATH)/$(LIBRARY_NAME)$(SHARED_LIBRARY_POSTFIX)
-	@echo " + LD\t$(LIBRARY_NAME)$(SHARED_LIBRARY_POSTFIX)"
-	@echo "Build $(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX) and $(LIBRARY_NAME)$(SHARED_LIBRARY_POSTFIX) library in $(LIB_PATH)"
+	@$(AR) rcs $(LIB_PATH)/lib$(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX) $(LIB_OBJS) $(EXTERNAL_OBJS)
+	@echo " + AR\tlib$(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX)"
+	@$(CC) $(CC_FLAGS) $(LD_FLAGS) -shared $(LIB_OBJS) $(EXTERNAL_OBJS) -o $(LIB_PATH)/lib$(LIBRARY_NAME)$(SHARED_LIBRARY_POSTFIX)
+	@echo " + LD\tlib$(LIBRARY_NAME)$(SHARED_LIBRARY_POSTFIX)"
+	@echo "Build lib$(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX) and lib$(LIBRARY_NAME)$(SHARED_LIBRARY_POSTFIX) library in $(LIB_PATH)"
 
 # Make the lib directory
 mkdir-lib:

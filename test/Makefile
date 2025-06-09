@@ -35,6 +35,8 @@
 # export LIBRARY_NAME
 # export SHARED_LIBRARY_POSTFIX
 # export STATIC_LIBRARY_POSTFIX
+# export EXTERNAL_LIBS
+# export EXTERNAL_LIB_PATH
 
 # Tools variables
 PIP                     :=  pip
@@ -62,7 +64,8 @@ CC_FLAGS                :=  -std=c11 $(CC_WARNINGS) $(CC_DEBUG) $(CC_OPTIMIZE) $
 
 
 LD_FLAGS                :=  -L$(LIBRARY_PATH)
-LD_FLAGS                +=  $(LIBRARY_PATH)/$(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX)
+LD_FLAGS                +=  $(LIBRARY_PATH)/lib$(LIBRARY_NAME)$(STATIC_LIBRARY_POSTFIX)
+LD_FLAGS                +=  $(EXTERNAL_LIBS) $(EXTERNAL_LIB_PATH)
 
 SRCS_C                 :=  $(shell find $(CTEST_PATH) -name "*.c")
 OBJS_C                 :=  $(patsubst $(CTEST_PATH)/%.c, $(BUILD_PATH)/%.o, $(SRCS_C))
