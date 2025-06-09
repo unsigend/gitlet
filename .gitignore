@@ -6,12 +6,13 @@ build/
 
 # Ignore pytest cache
 .pytest_cache/
+test/tests/**/.pytest_cache/
 
 # Ignore all python cache in all directory
-test/test_python/**/__pycache__/
+./test/tests/**/__pycache__/
 
 # Ignore python venv
-test/test_python/.venv/
+test/.venv/
 
 # Ignore all the .o files
 *.o
@@ -30,4 +31,4 @@ gitlet
 
 # Ignore all the .gitlet directory
 .gitlet/
-test/test_python/**/.gitlet/
+test/tests/**/.gitlet/
