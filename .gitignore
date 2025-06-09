@@ -9,7 +9,7 @@ build/
 test/tests/**/.pytest_cache/
 
 # Ignore all python cache in all directory
-./test/tests/**/__pycache__/
+**/__pycache__/
 
 # Ignore python venv
 test/.venv/
