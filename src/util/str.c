@@ -22,8 +22,11 @@
  * SOFTWARE.
  */
 #include <util/str.h>
+#include <util/error.h>
 
 #include <string.h>
+#include <openssl/sha.h>
+#include <stdio.h>
 
 bool str_start_with(const char *str, const char *prefix){
     return strncmp(str, prefix, strlen(prefix)) == 0;
@@ -39,4 +42,16 @@ bool str_contains(const char *str, const char *substr){
 
 bool str_equals(const char *str1, const char *str2){
     return strcmp(str1, str2) == 0;
+}
+
+void str_hash_sha1(char * restrict buffer, const char * str){
+    unsigned char hash[SHA_DIGEST_LENGTH];
+    if (SHA1((const unsigned char *)str, strlen(str), hash) == NULL){
+        gitlet_panic("Failed to hash the string using SHA1");
+    }
+    
+    // Convert binary hash to hex string
+    for (int i = 0; i < SHA_DIGEST_LENGTH; i++) {
+        sprintf(buffer + (i * 2), "%02x", hash[i]);
+    }
 }

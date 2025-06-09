@@ -31,6 +31,14 @@
  */
 #include <stdint.h>
 
+/**
+ * @brief: The type of the object
+ * @param OBJECT_TYPE_BLOB: The blob object
+ * @param OBJECT_TYPE_TREE: The tree object
+ * @param OBJECT_TYPE_COMMIT: The commit object
+ * @param OBJECT_TYPE_TAG: The tag object
+ * @param OBJECT_TYPE_UNKNOWN: The unknown object
+ */
 enum object_type{
     OBJECT_TYPE_BLOB,
     OBJECT_TYPE_TREE,
@@ -39,13 +47,29 @@ enum object_type{
     OBJECT_TYPE_UNKNOWN,
 };
 
+/**
+ * @brief: The gitlet object structure
+ * @param type: The type of the object
+ * @param file_size: The size of the object file
+ * @param content: The content of the object
+ */
 struct object{
     enum object_type type;
     uint64_t file_size;
     unsigned char * content;
 };
 
+/**
+ * @brief: Read the object from the gitlet repository
+ * @param obj: The object to be read
+ * @param sha1: The sha1 of the object
+ */
 extern void object_read(struct object * obj, const char * sha1);
+
+/**
+ * @brief: Write the object to the gitlet repository
+ * @param obj: The object to be written
+ */
 extern void object_write(struct object * obj);
 
 #endif

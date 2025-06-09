@@ -62,4 +62,11 @@ extern bool str_contains(const char *str, const char *substr);
  */
 extern bool str_equals(const char *str1, const char *str2);
 
+/**
+ * @brief: Hash the string using SHA1
+ * @param buffer: The buffer to store the hash
+ * @param str: The string to be hashed
+ */
+extern void str_hash_sha1(char * restrict buffer, const char * str);
+
 #endif // GITLET_UTIL_STR_H
