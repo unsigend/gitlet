@@ -60,11 +60,11 @@ void command_cat_file(int argc, char *argv[]) {
 
     struct argparse_option options[] = {
         OPTION_GROUP("Options"),
+        OPTION_HELP(),
         OPTION_BOOLEAN('t', NULL, "show object type (one of 'blob', 'tree', 'commit', 'tag', ...)", &t_flag, NULL, 0),
         OPTION_BOOLEAN('p', NULL, "pretty-print the contents of the object", &p_flag, NULL, 0),
         OPTION_BOOLEAN('s', NULL, "show object size", &s_flag, NULL, 0),
         OPTION_BOOLEAN('e', NULL, "check if <object> exists", &e_flag, NULL, 0),
-        OPTION_HELP(),
         OPTION_GROUP_END(),
         OPTION_END()
     };

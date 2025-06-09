@@ -72,4 +72,11 @@ extern void object_read(struct object * obj, const char * sha1);
  */
 extern void object_write(struct object * obj);
 
+/**
+ * @brief: Hash the file using SHA1 and add the header to the buffer
+ * @param buffer: The buffer to store the hash
+ * @param file: The file to be hashed
+ */
+extern void object_hash(char * buffer, const char * file);
+
 #endif
