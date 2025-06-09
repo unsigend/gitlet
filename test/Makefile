@@ -34,7 +34,7 @@ test: py-install
     
 clean-all:
 	@rm -rf $(ROOT_PATH)/.venv
-	@rm -rf $(TEST_PATH)/.pytest_cache
+	@rm -rf $(ROOT_PATH)/.pytest_cache
 
 # Init the python environment
 py-init:
