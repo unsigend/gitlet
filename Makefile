@@ -137,16 +137,6 @@ EXTERNAL_OBJS           := 	$(patsubst $(EXTERNAL_SRC_PATH)/%.c, $(EXTERNAL_OBJ_
 
 # Export variables for sub-makefiles
 export PYTHON
-export CC
-export CC_WARNINGS
-export CC_DEBUG
-export CC_OPTIMIZE
-export CC_DEPENDENCY
-export LIBRARY_NAME
-export SHARED_LIBRARY_POSTFIX
-export STATIC_LIBRARY_POSTFIX
-export EXTERNAL_LIBS
-export EXTERNAL_LIB_PATH
 
 .DEFAULT_GOAL := help
 .PHONY: all clean help lib test mkdir-lib dep add-env
@@ -170,12 +160,6 @@ all: $(OBJS) $(EXTERNAL_OBJS)
 	@$(CC) $(CC_FLAGS) $(LD_FLAGS) $(OBJS) $(EXTERNAL_OBJS) -o $(PROGRAM_NAME)
 	@echo " + LD\t$(PROGRAM_NAME)"
 	@echo "Build program $(PROGRAM_NAME) successfully in $(CURDIR)"
-
-# Clean all build files
-clean:
-	@rm -rf $(BUILD_PATH)
-	@rm -rf $(LIB_PATH)
-	@rm -f $(PROGRAM_NAME)
 
 # Show help
 help:
@@ -208,6 +192,12 @@ lib: mkdir-lib $(LIB_OBJS) $(EXTERNAL_OBJS)
 # Make the lib directory
 mkdir-lib:
 	@mkdir -p $(LIB_PATH)
+
+# Clean all build files
+clean:
+	@rm -rf $(BUILD_PATH)
+	@rm -rf $(LIB_PATH)
+	@rm -f $(PROGRAM_NAME)
 
 # Clean all build file and cache (danger for performance)
 clean-all:
