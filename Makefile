@@ -176,7 +176,6 @@ clean:
 	@rm -rf $(BUILD_PATH)
 	@rm -rf $(LIB_PATH)
 	@rm -f $(PROGRAM_NAME)
-	@$(MAKE) -C $(TEST_PATH) clean
 
 # Show help
 help:
@@ -187,8 +186,6 @@ help:
 	@echo "  make help\t- Show this help"
 	@echo "  make lib\t- Build the $(LIBRARY_NAME) library"
 	@echo "  make test\t- Run all test cases"
-	@echo "  make test-c\t- Run the C test cases"
-	@echo "  make test-py\t- Run the Python test cases"
 	@echo "  make dep\t- Install dependencies"
 	@echo "  make add-env\t- Export the program to the PATH variable"
 	@echo ""
@@ -197,13 +194,6 @@ help:
 test: lib all
 	@$(MAKE) -j4 -C $(TEST_PATH) test
 
-# Test the C test cases
-test-c: lib
-	@$(MAKE) -j4 -C $(TEST_PATH) test-c
-
-# Test the Python test cases
-test-py: lib all
-	@$(MAKE) -j4 -C $(TEST_PATH) test-py
 
 # filter out the main.o file
 LIB_OBJS                :=  $(filter-out $(OBJ_PATH)/main.o, $(OBJS))

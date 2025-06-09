@@ -1,1 +1,0 @@
-"""Test Suite for Util Module in gitlet"""
