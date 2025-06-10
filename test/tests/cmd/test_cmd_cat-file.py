@@ -4,10 +4,8 @@ Test the cat-file command
 
 # from standard library
 import os
-from re import A
 import shutil
 import subprocess
-import hashlib
 
 # from local modules
 from util import _global

@@ -93,6 +93,21 @@ def _case_str_hash_sha1() -> None:
         gitlet_lib.str_hash_sha1(buffer, content)
         assert buffer.value == hashlib.sha1(content).hexdigest().encode()
 
+def _case_str_hash_sha1_n() -> None:
+    """Test the str_hash_sha1_n function"""
+
+    buffer = ctypes.create_string_buffer(40)
+
+    gitlet_lib.str_hash_sha1_n(buffer, b"hello", 5)
+    assert buffer.value == hashlib.sha1(b"hello").hexdigest().encode()
+
+    gitlet_lib.str_hash_sha1_n(buffer, b"world", 5)
+    assert buffer.value == hashlib.sha1(b"world").hexdigest().encode()
+
+    gitlet_lib.str_hash_sha1_n(buffer, b"", 0)
+    assert buffer.value == hashlib.sha1(b"").hexdigest().encode()
+
+
 def test_util_str():
     """Run all string utility tests"""
     _case_str_start_with()
@@ -100,3 +115,4 @@ def test_util_str():
     _case_str_contains()
     _case_str_equals()
     _case_str_hash_sha1()
+    _case_str_hash_sha1_n()

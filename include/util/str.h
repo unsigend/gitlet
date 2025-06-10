@@ -30,6 +30,7 @@
  */
 
 #include <stdbool.h>
+#include <stddef.h>
 
 /**
  * @brief: check if the string starts with the prefix
@@ -63,10 +64,18 @@ extern bool str_contains(const char *str, const char *substr);
 extern bool str_equals(const char *str1, const char *str2);
 
 /**
- * @brief: Hash the string using SHA1
+ * @brief: Hash the null terminated string using SHA1
  * @param buffer: The buffer to store the hash
  * @param str: The string to be hashed
  */
 extern void str_hash_sha1(char * restrict buffer, const char * str);
+
+/**
+ * @brief: Hash the string with the length using SHA1
+ * @param buffer: The buffer to store the hash
+ * @param str: The string to be hashed
+ * @param len: The length of the string
+ */
+extern void str_hash_sha1_n(char * restrict buffer, const char * str, size_t len);
 
 #endif // GITLET_UTIL_STR_H

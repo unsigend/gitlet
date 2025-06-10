@@ -32,6 +32,7 @@
 #include <util/str.h>
 #include <util/files.h>
 #include <argparse.h>
+#include <object/object.h>
 
 // gitlet hash-object [-w] [file]
 void command_hash_object(int argc, char *argv[]) {
@@ -60,22 +61,29 @@ void command_hash_object(int argc, char *argv[]) {
     struct argparse argparse;
     argparse_init(&argparse, options, &description);
 
-    if (argc == 0){
-        argparse_parse(&argparse, 1, (char *[]){"-h"});
-    }else{
+    if (argc != 0){
         const char * last_arg = argv[argc - 1];
+        const char * file_path = NULL;
         
         if (str_start_with(last_arg, "-") || str_equals(last_arg, "--")){
             argparse_parse(&argparse, argc, argv);
         }else{
             // by default, the last argument is the file to be hashed
-            argparse_parse(&argparse, argc - 1, argv + 1);
+            file_path = last_arg;
+
+            argc--;
+            if (argc != 0){
+                argparse_parse(&argparse, argc, argv);
+            }
+
         }
 
         if (w_flag){
             /// TODO: Implement write the object to the repository
         }else{
-            /// TODO: Implement hash the object
+            char sha1_buffer[41] = {0};
+            object_hash(sha1_buffer, file_path);
+            fprintf(stdout, "%s\n", sha1_buffer);
         }
 
     }

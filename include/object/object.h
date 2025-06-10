@@ -61,7 +61,7 @@ struct object{
 
 /**
  * @brief: Read the object from the gitlet repository
- * @param obj: The object to be read
+ * @param obj: The object to be store the result
  * @param sha1: The sha1 of the object
  */
 extern void object_read(struct object * obj, const char * sha1);
@@ -73,8 +73,9 @@ extern void object_read(struct object * obj, const char * sha1);
 extern void object_write(struct object * obj);
 
 /**
- * @brief: Hash the file using SHA1 and add the header to the buffer
- * @param buffer: The buffer to store the hash
+ * @brief: Add the header to the buffer and hash the file using SHA1, 
+ *         write the result to the buffer.
+ * @param buffer: The buffer to store the hash the length of the buffer is 40 bytes
  * @param file: The file to be hashed
  */
 extern void object_hash(char * buffer, const char * file);

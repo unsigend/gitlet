@@ -45,8 +45,12 @@ bool str_equals(const char *str1, const char *str2){
 }
 
 void str_hash_sha1(char * restrict buffer, const char * str){
+    str_hash_sha1_n(buffer, str, strlen(str));
+}
+
+void str_hash_sha1_n(char * restrict buffer, const char * str, size_t len){
     unsigned char hash[SHA_DIGEST_LENGTH];
-    if (SHA1((const unsigned char *)str, strlen(str), hash) == NULL){
+    if (SHA1((const unsigned char *)str, len, hash) == NULL){
         gitlet_panic("Failed to hash the string using SHA1");
     }
     
