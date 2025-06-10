@@ -38,6 +38,14 @@
 #define FILE_BUFFER_SIZE UINT16_MAX
 #define OBJECT_HEADER_SIZE          64
 
+/**
+ * @brief: Decompress the file
+ * @param file_path: The path to the file to decompress
+ * @param decompressed_buffer: The buffer to store the decompressed file
+ * @param buffer_size: The size of the buffer
+ * 
+ * @category: Private
+ */
 static void _decompress_file(const char * file_path, char * decompressed_buffer, size_t buffer_size){
     FILE * file_stream = fopen(file_path, "rb");
     if (file_stream == NULL){
@@ -66,7 +74,68 @@ static void _decompress_file(const char * file_path, char * decompressed_buffer,
     free(compressed_buffer);
 }
 
-extern void object_read(struct object * obj, const char * sha1){
+/**
+ * @brief: Add the object header to the file
+ * @param file: The file to add the header to
+ * @param total_size: The size of the file with header added
+ * @return: The file content with header added
+ * 
+ * @note: The caller should free the returned memory on heap
+ * @category: Private
+ */
+static char * _add_object_header(const char * file, size_t* total_size){
+    FILE * file_stream = fopen(file, "rb");
+    if (file_stream == NULL){
+        gitlet_panic("Failed to open the file: %s", file);
+    }
+
+    // get the file size
+    fseek(file_stream, 0, SEEK_END);
+    long file_size = ftell(file_stream);
+    fseek(file_stream, 0, SEEK_SET);
+
+    // get the memory for the file content and header
+    char * file_content = (char *)malloc(file_size + OBJECT_HEADER_SIZE);
+    if (file_content == NULL){
+        gitlet_panic("Failed to allocate memory for the file content and header");
+    }
+
+    // add the object type
+    char * current_ptr = file_content;
+    strncpy(current_ptr, "blob", 4);
+    current_ptr += 4;
+
+    // add the space
+    *current_ptr = ' ';
+    current_ptr++;
+
+    // write the file size to the buffer
+    char file_size_str[20] = {0};
+    snprintf(file_size_str, 20, "%ld", file_size);
+    strncpy(current_ptr, file_size_str, strlen(file_size_str));
+    current_ptr += strlen(file_size_str);
+
+    // add the null terminator
+    *current_ptr = '\0';
+    current_ptr++;
+
+    if ((long)(current_ptr - file_content) > OBJECT_HEADER_SIZE){
+        gitlet_panic("Run out of header memory");
+    }
+
+    // add the file content
+    if (fread(current_ptr, 1, file_size, file_stream) != (unsigned long)file_size){
+        gitlet_panic("Failed to read the file: %s", file);
+    }
+    current_ptr += file_size;
+    *total_size = (size_t)(current_ptr - file_content);
+
+    fclose(file_stream);
+    return file_content;
+}
+
+
+void object_read(struct object * obj, const char * sha1){
     char object_file_path[PATH_MAX] = {0};
     if (getcwd(object_file_path, PATH_MAX) == NULL){
         gitlet_panic("Failed to get the current working directory");
@@ -129,54 +198,10 @@ void object_write(struct object * obj){
 
 
 void object_hash(char * buffer, const char * file){
-    FILE * file_stream = fopen(file, "rb");
-    if (file_stream == NULL){
-        gitlet_panic("Failed to open the file: %s", file);
-    }
+    size_t total_size = 0;
+    char * file_content_ptr = _add_object_header(file, &total_size);
 
-    // get the file size
-    fseek(file_stream, 0, SEEK_END);
-    long file_size = ftell(file_stream);
-    fseek(file_stream, 0, SEEK_SET);
+    str_hash_sha1_n(buffer, file_content_ptr, total_size);
 
-    // get the memory for the file content and header
-    char * file_content = (char *)malloc(file_size + OBJECT_HEADER_SIZE);
-    if (file_content == NULL){
-        gitlet_panic("Failed to allocate memory for the file content and header");
-    }
-
-    // add the object type
-    char * current_ptr = file_content;
-    strncpy(current_ptr, "blob", 4);
-    current_ptr += 4;
-
-    // add the space
-    *current_ptr = ' ';
-    current_ptr++;
-
-    // write the file size to the buffer
-    char file_size_str[20] = {0};
-    snprintf(file_size_str, 20, "%ld", file_size);
-    strncpy(current_ptr, file_size_str, strlen(file_size_str));
-    current_ptr += strlen(file_size_str);
-
-    // add the null terminator
-    *current_ptr = '\0';
-    current_ptr++;
-
-    if ((long)(current_ptr - file_content) > OBJECT_HEADER_SIZE){
-        gitlet_panic("Run out of header memory");
-    }
-
-    // add the file content
-    if (fread(current_ptr, 1, file_size, file_stream) != (unsigned long)file_size){
-        gitlet_panic("Failed to read the file: %s", file);
-    }
-    current_ptr += file_size;
-
-    // hash the file
-    str_hash_sha1_n(buffer, file_content, (size_t)(current_ptr - file_content));
-
-    free(file_content);
-    fclose(file_stream);
+    free(file_content_ptr);
 }
