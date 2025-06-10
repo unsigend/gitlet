@@ -22,11 +22,6 @@
  * SOFTWARE.
  */
 
-/**
- * This file is not part of gitlet
- * @ref: https://github.com/unsigend/util.git
- */
-
 #ifndef ARGPARSE_H
 #define ARGPARSE_H
 

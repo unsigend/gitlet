@@ -139,7 +139,7 @@ EXTERNAL_OBJS           := 	$(patsubst $(EXTERNAL_SRC_PATH)/%.c, $(EXTERNAL_OBJ_
 export PYTHON
 
 .DEFAULT_GOAL := help
-.PHONY: all clean help lib test mkdir-lib dep add-env
+.PHONY: all clean help lib test mkdir-lib dep add-env sync
 
 $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c
 	@mkdir -p $(dir $@) $(dir $(DEP_PATH)/$*.d)
@@ -172,6 +172,7 @@ help:
 	@echo "  make test\t- Run all test cases"
 	@echo "  make dep\t- Install dependencies"
 	@echo "  make add-env\t- Export the program to the PATH variable"
+	@echo "  make sync\t- Sync the external library"
 	@echo ""
 
 # Test the program library
@@ -223,3 +224,7 @@ else ifeq ($(SHELL_NAME), /bin/sh)
 else
 	@echo "Unsupported shell: $(SHELL_NAME)"
 endif
+
+# Sync the external library
+sync:
+	@$(BASH) $(SCRIPT_PATH)/sync-lib.sh
