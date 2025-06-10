@@ -78,13 +78,8 @@ void command_hash_object(int argc, char *argv[]) {
 
         }
 
-        if (w_flag){
-            /// TODO: Implement write the object to the repository
-        }else{
-            char sha1_buffer[41] = {0};
-            object_hash(sha1_buffer, file_path);
-            fprintf(stdout, "%s\n", sha1_buffer);
-        }
-
+        char sha1_buffer[41] = {0};
+        object_write(sha1_buffer, file_path, w_flag);
+        fprintf(stdout, "%s\n", sha1_buffer);
     }
 }

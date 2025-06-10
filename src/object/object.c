@@ -192,16 +192,15 @@ void object_read(struct object * obj, const char * sha1){
 
     free(decompressed_buffer);
 }
-void object_write(struct object * obj){
-
-}
-
-
-void object_hash(char * buffer, const char * file){
+void object_write(char * buffer, const char * file, bool write_to_repo){
     size_t total_size = 0;
     char * file_content_ptr = _add_object_header(file, &total_size);
 
     str_hash_sha1_n(buffer, file_content_ptr, total_size);
+
+    if (write_to_repo){
+        /// TODO: Write the object to the gitlet repository
+    }
 
     free(file_content_ptr);
 }

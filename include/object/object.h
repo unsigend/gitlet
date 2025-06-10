@@ -30,6 +30,7 @@
  *         for the object in the gitlet.
  */
 #include <stdint.h>
+#include <stdbool.h>
 
 /**
  * @brief: The type of the object
@@ -66,18 +67,15 @@ struct object{
  */
 extern void object_read(struct object * obj, const char * sha1);
 
-/**
- * @brief: Write the object to the gitlet repository
- * @param obj: The object to be written
- */
-extern void object_write(struct object * obj);
 
 /**
- * @brief: Add the header to the buffer and hash the file using SHA1, 
- *         write the result to the buffer.
+ * @brief: Write the object to the gitlet repository
  * @param buffer: The buffer to store the hash the length of the buffer is 40 bytes
  * @param file: The file to be hashed
+ * @param write_to_repo: Whether to write the object to the gitlet repository
  */
-extern void object_hash(char * buffer, const char * file);
+extern void object_write(char * buffer, const char * file, bool write_to_repo);
+
+
 
 #endif
