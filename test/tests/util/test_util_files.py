@@ -11,7 +11,6 @@ from util._global import gitlet_lib
 
 def _case_exists() -> None:
     """Test the exists function"""
-
     with open(os.path.join(_global.TEST_DIR, "test.txt"), "w") as f:
         f.write("test")
     assert gitlet_lib.exists(os.path.join(_global.TEST_DIR, "test.txt").encode())
