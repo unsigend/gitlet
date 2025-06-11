@@ -26,6 +26,10 @@ def _case_hash_object_flag_file() -> None:
     _global.compare_output(["hash-object", os.path.join(_global.ROOT_DIR, "util", "__init__.py")])
     _global.compare_output(["hash-object", os.path.join(_global.ROOT_DIR, "util", "_global.py")])
 
+def _case_hash_object_flag_w() -> None:
+    """Test the hash-object command with the -w flag"""
+    _global.compare_output(["hash-object", "-w", __file__])
+    
 
 def test_cmd_hash_object():
     """Test the hash-object command"""
@@ -33,5 +37,6 @@ def test_cmd_hash_object():
 
     _case_hash_object_no_flag()
     _case_hash_object_flag_file()
+    _case_hash_object_flag_w()
 
     _global.global_teardown()

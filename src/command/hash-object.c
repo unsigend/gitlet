@@ -53,7 +53,7 @@ void command_hash_object(int argc, char *argv[]) {
     struct argparse_option options[] = {
         OPTION_GROUP("Options"),
         OPTION_HELP(),
-        OPTION_BOOLEAN('w', NULL, "write the object to the repository", &w_flag, NULL, 0),
+        OPTION_BOOLEAN('w', NULL, "write the object into the object database", &w_flag, NULL, 0),
         OPTION_GROUP_END(),
         OPTION_END()
     };
