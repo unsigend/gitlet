@@ -41,27 +41,35 @@ def _case_cat_file_flag_t() -> None:
     """Test the cat-file command with the -t flag"""
 
     for sha1 in SHA1_LIST:
-        _global.compare_output(["cat-file", "-t", sha1])
+        result_map = _global.compare_output(["cat-file", "-t", sha1])
+        assert result_map["gitlet_result"].returncode == result_map["git_result"].returncode
+        assert result_map["gitlet_result"].stdout == result_map["git_result"].stdout
 
 
 def _case_cat_file_flag_p() -> None:
     """Test the cat-file command with the -p flag"""
 
     for sha1 in SHA1_LIST:
-        _global.compare_output(["cat-file", "-p", sha1])
+        result_map = _global.compare_output(["cat-file", "-p", sha1])
+        assert result_map["gitlet_result"].returncode == result_map["git_result"].returncode
+        assert result_map["gitlet_result"].stdout == result_map["git_result"].stdout
 
 
 def _case_cat_file_flag_s() -> None:
     """Test the cat-file command with the -s flag"""
 
     for sha1 in SHA1_LIST:
-        _global.compare_output(["cat-file", "-s", sha1])
+        result_map = _global.compare_output(["cat-file", "-s", sha1])
+        assert result_map["gitlet_result"].returncode == result_map["git_result"].returncode
+        assert result_map["gitlet_result"].stdout == result_map["git_result"].stdout
 
 def _case_cat_file_flag_e() -> None:
     """Test the cat-file command with the -e flag"""
 
     for sha1 in SHA1_LIST:
-        _global.compare_output(["cat-file", "-e", sha1])
+        result_map = _global.compare_output(["cat-file", "-e", sha1])
+        assert result_map["gitlet_result"].returncode == result_map["git_result"].returncode
+        assert result_map["gitlet_result"].stdout == result_map["git_result"].stdout
 
 
 def test_cmd_cat_file():

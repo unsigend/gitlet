@@ -35,52 +35,31 @@
 #include <util/str.h>
 #include <util/error.h>
 
-#define FILE_BUFFER_SIZE            UINT16_MAX
-#define OBJECT_HEADER_SIZE          64
+#define OBJECT_HEADER_SIZE          128
 #define SMALL_FILE_BUFFER_SIZE      512
 
 /**
- * @brief: Decompress the file
- * @param file_path: The path to the file to decompress
- * @param decompressed_buffer: The buffer to store the decompressed file
- * @param buffer_size: The size of the buffer
- * 
- * @category: Private
+ * @brief: Decompress the content
+ * @param src_buffer: The source buffer
+ * @param src_size: The size of the source buffer
+ * @param dest_buffer: The destination buffer
+ * @param dest_size: The size of the destination buffer
  */
-static void _decompress_file(const char * file_path, char * decompressed_buffer, size_t buffer_size){
-    FILE * file_stream = fopen(file_path, "rb");
-    if (file_stream == NULL){
-        gitlet_panic("Failed to open the file: %s", file_path);
+static inline uLongf _decompress_content(const char * src_buffer, size_t src_size, 
+    char * dest_buffer, size_t dest_size, bool ignore_error){
+    // decompress the content
+    uLongf decompressed_size = dest_size;
+    int result = uncompress((Bytef *)dest_buffer, &decompressed_size, (Bytef *)src_buffer, src_size);
+    if (!ignore_error && result != Z_OK){
+        if (result == Z_MEM_ERROR){
+            gitlet_panic("Out of memory");
+        }else if (result == Z_BUF_ERROR){
+            gitlet_panic("Buffer too small");
+        }else{
+            gitlet_panic("Failed to decompress the content: %d", result);
+        }
     }
-    
-    // get the file size
-    fseek(file_stream, 0, SEEK_END);
-    long file_size = ftell(file_stream);
-    fseek(file_stream, 0, SEEK_SET);
-
-    // read the entire file
-    unsigned char * compressed_buffer = (unsigned char *)malloc(file_size);
-    if (compressed_buffer == NULL) {
-        fclose(file_stream);
-        gitlet_panic("Failed to allocate memory for compressed buffer");
-    }
-    
-    size_t bytes_read = fread(compressed_buffer, 1, file_size, file_stream);
-    if (bytes_read != (size_t)file_size){
-        free(compressed_buffer);
-        fclose(file_stream);
-        gitlet_panic("Failed to read the file: %s", file_path);
-    }
-    fclose(file_stream);
-
-    // decompress the file
-    uLongf decompressed_size = buffer_size;
-    int result = uncompress((Bytef *)decompressed_buffer, &decompressed_size, (Bytef *)compressed_buffer, file_size);
-    if (result != Z_OK){
-        free(compressed_buffer);
-        gitlet_panic("Failed to decompress the file: %s", file_path);
-    }
-    free(compressed_buffer);
+    return decompressed_size;
 }
 
 /**
@@ -92,7 +71,7 @@ static void _decompress_file(const char * file_path, char * decompressed_buffer,
  * @return: The size of the compressed content
  * 
  */
-static uLongf _compress_content(const char * src_buffer, size_t src_size, char * dest_buffer, size_t dest_size){
+static inline uLongf _compress_content(const char * src_buffer, size_t src_size, char * dest_buffer, size_t dest_size){
     // compress the content
     uLongf compressed_size = dest_size;
     int result = compress((Bytef *)dest_buffer, &compressed_size, (Bytef *)src_buffer, src_size);
@@ -175,78 +154,161 @@ static char * _add_object_header(const char * file, size_t* total_size){
 
 
 void object_read(struct object * obj, const char * sha1){
-    char object_file_path[PATH_MAX] = {0};
-    if (getcwd(object_file_path, PATH_MAX) == NULL){
+
+
+    char file_path[PATH_MAX];
+    memset(file_path, 0, PATH_MAX);
+
+    if (getcwd(file_path, PATH_MAX) == NULL){
         gitlet_panic("Failed to get the current working directory");
     }
-    
-    size_t current_len = strlen(object_file_path);
-    if (current_len + 20 >= PATH_MAX) { 
-        gitlet_panic("Path too long for object file");
-    }
-    
-    strcat(object_file_path, "/.gitlet/objects/");
-    strncpy(object_file_path + strlen(object_file_path), sha1, 2);
-    strcat(object_file_path, "/");
-    strncpy(object_file_path + strlen(object_file_path), sha1 + 2, 38);
-    
-    char * decompressed_buffer = (char *)malloc(FILE_BUFFER_SIZE);
-    if (decompressed_buffer == NULL) {
-        gitlet_panic("Failed to allocate memory for decompressed buffer");
-    }
-    
-    _decompress_file(object_file_path, decompressed_buffer, FILE_BUFFER_SIZE);
 
-    // Parse type
-    char * type_buffer = decompressed_buffer;
-    char * current_ptr = (char *)strchr(type_buffer, ' ');
-    if (current_ptr == NULL){
-        free(decompressed_buffer);
-        gitlet_panic("Invalid object type: %s", type_buffer);
+    strcat(file_path, "/.gitlet/objects/");
+    strncpy(file_path + strlen(file_path), sha1, 2);
+    strcat(file_path, "/");
+    strncpy(file_path + strlen(file_path), sha1 + 2, 38);
+
+    // check if the file exists
+    if (!exists(file_path)){
+        gitlet_panic("Object file not found: %s", file_path);
     }
-    *current_ptr = '\0';
-    current_ptr++;
+
+    // open the file
+    FILE * object_file = fopen(file_path, "rb");
+    if (object_file == NULL){
+        gitlet_panic("Failed to open the object file: %s", file_path);
+    }
+
+    // get the file size
+    fseek(object_file, 0, SEEK_END);
+    long file_size = ftell(object_file);
+    if (file_size < 0) {
+        fclose(object_file);
+        gitlet_panic("Failed to get file size: %s", file_path);
+    }
+    fseek(object_file, 0, SEEK_SET);
+
+    // get the memory for the file content and header
+    char * compressed_buffer = (char *)malloc(file_size);
+    if (compressed_buffer == NULL){
+        fclose(object_file);
+        gitlet_panic("Failed to allocate memory for the compressed file");
+    }
+
+    // read the file
+    if (fread(compressed_buffer, 1, file_size, object_file) != (unsigned long)file_size){
+        free(compressed_buffer);
+        fclose(object_file);
+        gitlet_panic("Failed to read the object file: %s", file_path);
+    }
+
+    fclose(object_file);
+
+    size_t decompressed_size;
+    bool read_header_only;
+    if (file_size < OBJECT_HEADER_SIZE){
+        decompressed_size = file_size;
+        read_header_only = false;
+    }else{
+        // only read the header
+        read_header_only = true;
+        decompressed_size = OBJECT_HEADER_SIZE;
+    }
     
-    if (strcmp(type_buffer, "blob") == 0){
+    char * decompressed_buffer = (char *)malloc(decompressed_size);
+    if (decompressed_buffer == NULL){
+        free(compressed_buffer);
+        gitlet_panic("Failed to allocate memory for the decompressed file");
+    }
+
+    _decompress_content(compressed_buffer, file_size, decompressed_buffer,
+    decompressed_size, read_header_only);
+
+    // get the object type
+    char type_buffer[12];
+    memset(type_buffer, 0, 12);
+
+    char * current_ptr = strchr(decompressed_buffer, ' ');
+    if (current_ptr == NULL){
+        free(compressed_buffer);
+        free(decompressed_buffer);
+        gitlet_panic("Invalid object file: %s", file_path);
+    }
+
+    *current_ptr = '\0';
+    strcpy(type_buffer, decompressed_buffer);
+    ++current_ptr;
+
+    if (str_equals(type_buffer, "blob")){
         obj->type = OBJECT_TYPE_BLOB;
-    }else if (strcmp(type_buffer, "tree") == 0){
+    }else if (str_equals(type_buffer, "tree")){
         obj->type = OBJECT_TYPE_TREE;
-    }else if (strcmp(type_buffer, "commit") == 0){
+    }else if (str_equals(type_buffer, "commit")){
         obj->type = OBJECT_TYPE_COMMIT;
-    }else if (strcmp(type_buffer, "tag") == 0){
+    }else if (str_equals(type_buffer, "tag")){
         obj->type = OBJECT_TYPE_TAG;
     }else{
+        free(compressed_buffer);
         free(decompressed_buffer);
         gitlet_panic("Invalid object type: %s", type_buffer);
     }
-
-    // Parse size
-    char * check_ptr = current_ptr;
-    obj->file_size = strtol(current_ptr, &check_ptr, 10);
-    if (*check_ptr != '\0' || obj->file_size < 0){
+    
+    // get the file size
+    char * _dest = NULL;
+    obj->file_size = strtol(current_ptr, &_dest, 10);
+    if (*_dest != '\0'){
+        free(compressed_buffer);
         free(decompressed_buffer);
-        gitlet_panic("Invalid object size: %s", current_ptr);
+        gitlet_panic("Invalid object file: %s", file_path);
     }
+    ++_dest;
+    current_ptr = _dest;
 
-    // Skip the null terminator after size
-    current_ptr = check_ptr + 1;  
-
-    if (obj->file_size > FILE_BUFFER_SIZE){
-        // means the object is a large object and the decompressed buffer is not enough
+    if (read_header_only){
+        // free the decompressed buffer and re-malloc a new bigger buffer
         free(decompressed_buffer);
-        gitlet_panic("Object too large: %llu bytes", obj->file_size);
-    }else{
-        // Store the content
-        obj->content = (unsigned char *)malloc(obj->file_size + 1);
-        if (obj->content == NULL) {
-            free(decompressed_buffer);
-            gitlet_panic("Failed to allocate memory for object content");
+        decompressed_buffer = (char *)malloc(obj->file_size + OBJECT_HEADER_SIZE);
+        if (decompressed_buffer == NULL){
+            free(compressed_buffer);
+            gitlet_panic("Failed to allocate memory for the decompressed file");
         }
-        strncpy((char *)obj->content, current_ptr, obj->file_size);
-        obj->content[obj->file_size] = '\0';
-    }
+        // re-decompress the content
+        _decompress_content(compressed_buffer, file_size, decompressed_buffer,
+        obj->file_size + OBJECT_HEADER_SIZE, false);
 
-    free(decompressed_buffer);
+        char * null_terminator_ptr = memchr(decompressed_buffer, '\0', OBJECT_HEADER_SIZE);
+        if (null_terminator_ptr == NULL){
+            free(compressed_buffer);
+            free(decompressed_buffer);
+            gitlet_panic("Invalid object file: %s", file_path);
+        }
+        ++null_terminator_ptr;
+        obj->content = (unsigned char *)malloc(obj->file_size + 1);
+        if (obj->content == NULL){
+            free(compressed_buffer);
+            free(decompressed_buffer);
+            gitlet_panic("Failed to allocate memory for the object content");
+        }
+        memcpy(obj->content, null_terminator_ptr, obj->file_size);
+        obj->content[obj->file_size] = '\0';
+
+        // free the compressed buffer
+        free(compressed_buffer);
+    }else{
+        obj->content = (unsigned char *)malloc(obj->file_size + 1);
+        if (obj->content == NULL){
+            free(compressed_buffer);
+            free(decompressed_buffer);
+            gitlet_panic("Failed to allocate memory for the object content");
+        }
+        fprintf(stderr, "current_ptr: %s\n", current_ptr);
+        memcpy(obj->content, current_ptr, obj->file_size);
+        obj->content[obj->file_size] = '\0';
+
+        // free all the resources
+        free(compressed_buffer);
+        free(decompressed_buffer);
+    }
 }
 void object_write(char * buffer, const char * file, bool write_to_repo){
     size_t uncompressed_file_size = 0;

@@ -44,16 +44,17 @@ def get_shared_lib() -> ctypes.CDLL:
     return ctypes.CDLL(f"../lib/{lib_name}")
 
 
-def compare_output(commands: list[str]) -> None:
+def compare_output(commands: list[str], _capture_output: bool = True) -> dict[str, subprocess.CompletedProcess[str]]:
     """Compare the output of the commands based on the test directory"""
     _gitlet_commands = [PROGRAM_GITLET] + commands
     _git_commands = [PROGRAM_GIT] + commands
 
-    _gitlet_output = subprocess.run(_gitlet_commands, cwd=TEST_DIR, capture_output=True, text=True)
-    _git_output = subprocess.run(_git_commands, cwd=TEST_DIR, capture_output=True, text=True)
+    _gitlet_output = subprocess.run(_gitlet_commands, cwd=TEST_DIR, capture_output=_capture_output, text=True)
+    _git_output = subprocess.run(_git_commands, cwd=TEST_DIR, capture_output=_capture_output, text=True)
 
-    assert _gitlet_output.returncode == _git_output.returncode
-    assert _gitlet_output.stdout == _git_output.stdout
-
+    return {
+        "gitlet_result": _gitlet_output,
+        "git_result": _git_output,
+    }
 
 gitlet_lib = get_shared_lib()
