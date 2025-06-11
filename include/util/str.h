@@ -78,4 +78,27 @@ extern void str_hash_sha1(char * restrict buffer, const char * str);
  */
 extern void str_hash_sha1_n(char * restrict buffer, const char * str, size_t len);
 
+/**
+ * @brief: Decompress the content using zlib
+ * @param src_buffer: The source buffer
+ * @param src_size: The size of the source buffer
+ * @param dest_buffer: The destination buffer
+ * @param dest_size: The size of the destination buffer
+ * @param ignore_error: Whether to ignore the error
+ * @return: The size of the decompressed content
+ */
+extern unsigned long str_decompress(const char * src_buffer, size_t src_size, 
+    char * dest_buffer, size_t dest_size, bool ignore_error);
+
+/**
+ * @brief: Compress the content using zlib
+ * @param src_buffer: The source buffer
+ * @param src_size: The size of the source buffer
+ * @param dest_buffer: The destination buffer
+ * @param dest_size: The size of the destination buffer
+ * @return: The size of the compressed content
+ */
+extern unsigned long str_compress(const char * src_buffer, size_t src_size, 
+    char * dest_buffer, size_t dest_size);
+
 #endif // GITLET_UTIL_STR_H

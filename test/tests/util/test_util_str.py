@@ -4,6 +4,7 @@
 import os
 import hashlib
 import ctypes
+import zlib
 
 # from local modules
 from util import _global
@@ -108,6 +109,22 @@ def _case_str_hash_sha1_n() -> None:
     assert buffer.value == hashlib.sha1(b"").hexdigest().encode()
 
 
+def __check_case_str_compression(original : bytes) -> None:
+    buffer_size = max(len(original) * 2, 100)
+    compressed_data = ctypes.create_string_buffer(buffer_size)
+    compressed_size = gitlet_lib.str_compress(original, len(original), compressed_data, buffer_size)
+    decompressed_data = ctypes.create_string_buffer(len(original) + 100)
+    decompressed_size = gitlet_lib.str_decompress(compressed_data, compressed_size, decompressed_data, len(decompressed_data), False)
+    assert decompressed_data.raw[:decompressed_size] == original
+
+def _case_str_compression() -> None:
+    __check_case_str_compression(b"hello world")
+    __check_case_str_compression(b"")
+    __check_case_str_compression(b"a0123456789")
+    __check_case_str_compression(b"0x39802480938240293480")
+    __check_case_str_compression(b"x" * 10000)
+    __check_case_str_compression(b"long string with a lot of characters")
+
 def test_util_str():
     """Run all string utility tests"""
     _case_str_start_with()
@@ -116,3 +133,5 @@ def test_util_str():
     _case_str_equals()
     _case_str_hash_sha1()
     _case_str_hash_sha1_n()
+    _case_str_compression()
+
