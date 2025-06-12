@@ -245,6 +245,7 @@ void object_write(char * buffer, const char * file, bool write_to_repo){
     struct object _obj;
     _obj.type = OBJECT_TYPE_BLOB;
     _obj.file_size = file_size(_file);
+    _obj.content = NULL;
 
     /**
      * allocate the memory for the raw buffer : the header + the file content

@@ -48,6 +48,10 @@ Currently only testing and building in these operating systems for test. The pro
 - Python 3
 - Debugger
 
+### Required Library
+- openssh for C SHA1 hash
+- zlib for compress and decompress meta data
+
 ### Python Testing Dependencies
 - pytest (automatically installed in virtual environment)
   - Used for Python test suite
@@ -102,6 +106,7 @@ This will:
 - Compile all source files with optimizations
 - Link against required libraries
 - Generate debug symbols if DEBUG=1 is set
+
 ### Add Program to Global Environment
 Using this command to add the program to your global shell environment. And when you want to use test cases for the program you must use it.
 ```bash
@@ -129,23 +134,11 @@ make clean-all
 
 ## Testing
 
-Gitlet supports a variety of test suites using pytest for Python tests and Utest Framework for C tests. The test system is designed to be comprehensive and easy to use.
+Gitlet supports a variety of test suites using pytest for Python tests.The test system is designed to be comprehensive and easy to use.
 
-To run all tests (both C and Python):
+To run all tests:
 ```bash
 make test
-```
-
-To run C test cases:
-
-```bash
-make test-c
-```
-
-To run Python test cases:
-
-```bash
-make test-py
 ```
 
 ## Available Commands
@@ -155,15 +148,16 @@ make test-py
 - `make lib` - Build the gitlet library
 - `make clean` - Clean build files
 - `make clean-all` - Clean all files including Python environment
-- `make add-env` - Export the program to the PATH variable
 
 ### Test Commands
 - `make test` - Run all tests
-- `make test-c` - Run C tests only
-- `make test-py` - Run Python tests only
 
-### Help
+### Help Commands
 - `make help` - Show available commands and their descriptions
+
+### Other Commands
+- `make add-env` - Export the program to the PATH variable
+- `make sync`  - Sync the external library
 
 ## Contributing
 
