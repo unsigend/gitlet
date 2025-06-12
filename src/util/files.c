@@ -58,3 +58,10 @@ bool is_directory(const char * path){
     struct stat status;
     return stat(path, &status) == 0 && S_ISDIR(status.st_mode);
 } 
+
+size_t file_size(FILE * file){
+    fseek(file, 0, SEEK_END);
+    size_t _size = ftell(file);
+    fseek(file, 0, SEEK_SET);
+    return _size;
+}

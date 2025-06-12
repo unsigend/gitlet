@@ -2,8 +2,6 @@
 
 # from standard library
 import os
-import shutil
-import subprocess
 
 # from local modules
 from util import _global

@@ -72,11 +72,11 @@ unsigned long str_decompress(const char * src_buffer, size_t src_size,
     int result = uncompress((Bytef *)dest_buffer, &decompressed_size, (Bytef *)src_buffer, src_size);
     if (!ignore_error && result != Z_OK){
         if (result == Z_MEM_ERROR){
-            fprintf(stderr, "Out of memory");
+            fprintf(stderr, "Out of memory\n");
         }else if (result == Z_BUF_ERROR){
-            fprintf(stderr, "Buffer too small");
+            fprintf(stderr, "Buffer too small\n");
         }else{
-            fprintf(stderr, "Failed to decompress the content: %d", result);
+            fprintf(stderr, "Failed to decompress the content: %d\n", result);
         }
         exit(1);
     }
@@ -92,11 +92,11 @@ unsigned long str_compress(const char * src_buffer, size_t src_size, char * dest
     int result = compress((Bytef *)dest_buffer, &compressed_size, (Bytef *)src_buffer, src_size);
     if (result != Z_OK){
         if (result == Z_MEM_ERROR){
-            fprintf(stderr, "Out of memory");
+            fprintf(stderr, "Out of memory\n");
         }else if (result == Z_BUF_ERROR){
-            fprintf(stderr, "Buffer too small");
+            fprintf(stderr, "Buffer too small\n");
         }else{
-            fprintf(stderr, "Failed to compress the content: %d", result);
+            fprintf(stderr, "Failed to compress the content: %d\n", result);
         }
         exit(1);
     }

@@ -26,6 +26,7 @@
 #define GITLET_UTIL_FILES_H
 
 #include <stdbool.h>
+#include <stdio.h>
 
 /**
  * @brief Check if a file or directory exists
@@ -74,5 +75,13 @@ extern bool remove_file(const char * file_name);
  * @return true if the path is a directory, false otherwise
  */
 extern bool is_directory(const char * path);
+
+/**
+ * @brief Get the size of a file
+ * 
+ * @param file The file to get the size of
+ * @return The size of the file
+ */
+extern size_t file_size(FILE * file);
 
 #endif // GITLET_UTIL_FILES_H

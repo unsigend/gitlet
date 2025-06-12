@@ -4,7 +4,6 @@
 import os
 import hashlib
 import ctypes
-import zlib
 
 # from local modules
 from util import _global
