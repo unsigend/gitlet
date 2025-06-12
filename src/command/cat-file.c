@@ -49,7 +49,7 @@ void command_cat_file(int argc, char *argv[]) {
 
     struct argparse_description description;
     description._program_name =  NULL;
-    description._usage = "gitlet cat-file [object]";
+    description._usage = "gitlet cat-file <type> <object>\n   or: gitlet cat-file (-e | -p) <object>\n   or: gitlet cat-file (-s | -p) <object>";
     description._description = "Display the contents of an object";
     description._epilog = NULL;
 
