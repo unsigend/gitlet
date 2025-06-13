@@ -9,6 +9,8 @@
 
 A Simple and lightweight version control system inspired by Git, implemented in C with Python test support. Gitlet provides core version control features while maintaining a minimal and efficient design. Mainly for studying purpose.
 
+**Note: This project is temporarily not being actively maintained due to techinical difficulties and third party libraries missing.**
+
 Inspired by: 
 - [UC Berkeley CS 61B](https://sp21.datastructur.es/materials/proj/proj2/proj2)
 - [Write yourself a git](https://wyag.thb.lt/)
